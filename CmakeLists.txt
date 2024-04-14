@@ -1,0 +1,31 @@
+cmake_minimum_required(VERSION 3.10)
+project(BE_rougelike)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+find_package(OpenGL REQUIRED)
+
+add_subdirectory(external/glad)
+
+include_directories(${OPENGL_INCLUDE_DIR}
+                    external/glad/include
+                    external/cglm/include
+                    external/stb/include
+                    external/pico_headers/include)
+
+set(SOURCES src/app.c
+            src/game/game.c
+            src/window/window.c
+            src/shader/shader.c 
+            src/texture/texture.c 
+            src/utility/rand.c 
+            src/utility/error.c
+            src/rendering/rendering_sprites.c 
+            src/resource_manager/resource_manager.c)
+
+
+add_executable(game WIN32 ${SOURCES})
+
+target_link_libraries(game ${OPENGL_gl_LIBRARY} glad)
