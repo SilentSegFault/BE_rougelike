@@ -23,7 +23,10 @@ set(SOURCES src/app.c
             src/utility/rand.c 
             src/utility/error.c
             src/rendering/rendering_sprites.c 
-            src/resource_manager/resource_manager.c)
+            src/resource_manager/resource_manager.c
+            src/ecs/components.c
+            src/ecs/systems.c
+            src/ecs/factories.c)
 
 
 add_executable(game WIN32 ${SOURCES})

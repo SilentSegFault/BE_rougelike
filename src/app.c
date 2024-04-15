@@ -16,6 +16,9 @@
 #define PICO_LOG_IMPLEMENTATION
 #include "pico_headers/pico_log.h"
 
+#define PICO_ECS_IMPLEMENTATION
+#include "pico_headers/pico_ecs.h"
+
 #include <time.h>
 
 void InitLogger(char *logDirPath, log_level_t logLevel);
@@ -53,12 +56,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
 
   LoadOpenGLFunctions();
 
+  InitGame();
   SetWindowSizingCallback(ViewportSizingUpdate);
 
   ShowWindow(hMainWindow, nCmdShow);
   UpdateWindow(hMainWindow);
 
-  InitGame();
   clock_t appStarted = clock();
   unsigned long timeStarting = 1000 * (double)(appStarted - beginApp) / CLOCKS_PER_SEC;
   log_debug("App started [%lums]", timeStarting);
