@@ -10,7 +10,6 @@ ecs_id_t CreateSmiley(ecs_t *ecs, float x, float y)
   Transform *transform = ecs_add(ecs, ent, TransformComp, NULL);
   transform->position[0] = x;
   transform->position[1] = y;
-  log_debug("transform component: %p, x = %f, y = %f", transform, x, y);
 
   transform->size[0] = 30.0;
   transform->size[1] = 30.0;

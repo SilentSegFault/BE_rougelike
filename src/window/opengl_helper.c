@@ -1,51 +1,10 @@
-#include "window.h"
-#include "glad/glad.h"
-#include <Windows.h>
+#include "opengl_helper.h"
 #include "pico_headers/pico_log.h"
+#include "glad/glad.h"
 #include "../utility/error.h"
 
-unsigned int windowWidth, windowHeight;
-WindowSizing *windowSizingCallback = NULL;
 wglCreateContextAttribsARB_t *wglCreateContextAttribsARB;
 wglChoosePixelFormatARB_t *wglChoosePixelFormatARB;
-
-LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lParam)
-{
-  switch (msg)
-  {
-    case WM_CREATE:
-      break;
-
-    case WM_CLOSE:
-      log_trace("Close message received.");
-      DestroyWindow(hwnd);
-      break;
-
-    case WM_DESTROY:
-      log_trace("Destroy message received.");
-      PostQuitMessage(0);
-      break;
-
-
-    case WM_SIZE:
-    case WM_SIZING:
-      {
-        log_trace("Sizing message recived.");
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-        windowWidth = rc.right - rc.left;
-        windowHeight = rc.bottom - rc.top;
-
-        if(windowSizingCallback != NULL)
-          windowSizingCallback(hwnd, windowWidth, windowHeight);
-      }
-      break;
-
-    default:
-      return DefWindowProc(hwnd, msg, wParam, lParam);
-  }
-  return 0;
-}
 
 void* GetAnyGLFuncAddress(const char *name)
 {
@@ -58,51 +17,6 @@ void* GetAnyGLFuncAddress(const char *name)
   }
 
   return p;
-}
-
-HWND CreateMainWindow(const char *title, int width, int height)
-{
-  log_info("Creating main window.");
-  WNDCLASSEX wc;
-
-  wc.cbSize        = sizeof(wc);
-  wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-  wc.lpfnWndProc   = WndProc;
-  wc.cbClsExtra    = 0;
-  wc.cbWndExtra    = 0;
-  wc.hInstance     = GetModuleHandle(NULL);
-  wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
-  wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = NULL;
-  wc.lpszMenuName  = NULL;
-  wc.lpszClassName = "MaindWndClass";
-  wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
-
-  if(!RegisterClassEx(&wc))
-  {
-    log_fatal("Failed to initialize main window class.");
-    FATAL_ERROR();
-  }
-
-  RECT rc;
-  SetRect(&rc, 0, 0, width, height);
-  AdjustWindowRectEx(&rc, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-  windowWidth  = rc.right  - rc.left;
-  windowHeight = rc.bottom - rc.top;
-  
-
-  HWND hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_TOPMOST, wc.lpszClassName, title, WS_OVERLAPPEDWINDOW,
-                             CW_USEDEFAULT, CW_USEDEFAULT, windowWidth, windowHeight,
-                             NULL, NULL, GetModuleHandle(NULL), NULL);
-
-  if(hwnd == NULL)
-  {
-    log_fatal("Failed to create main window.");
-    FATAL_ERROR();
-  }
-
-  log_info("Main window created.");
-  return hwnd;
 }
 
 void _InitGLContextExtensions(void)
@@ -258,25 +172,4 @@ void LoadOpenGLFunctions(void)
   }
 }
 
-void PollEvents(BOOL *bWindowShouldClose)
-{
-  static MSG msg;
-  (*bWindowShouldClose) = FALSE;
-  while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-  {
-    if(msg.message == WM_QUIT)
-    {
-      (*bWindowShouldClose) = TRUE;
-    }
-    else
-    {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
-  }
-}
 
-void SetWindowSizingCallback(WindowSizing *callback)
-{
-  windowSizingCallback = callback;
-}

@@ -1,12 +1,14 @@
 #include "game.h"
-#include "../window/window.h"
+#include "../window/win32_helper.h"
 #include "../resource_manager/resource_manager.h"
 #include "../rendering/rendering_sprites.h"
 #include "../ecs/ecs.h"
 #include "../utility/error.h"
+#include "../utility/rand.h"
 #include "glad/glad.h"
 #include "pico_headers/pico_log.h"
 #include "cglm/cglm.h"
+#include <winuser.h>
 
 ecs_t *ecs = NULL;
 
@@ -42,7 +44,8 @@ void InitGame(void)
 
 void Update(double deltaTime)
 {
-
+  if(KeyDown(KEY_MOUSELEFT))
+    CreateSmiley(ecs, mouseX - 15.0f, mouseY - 15.0f);
 }
 
 void Render(HDC hdc)
@@ -56,15 +59,6 @@ void Render(HDC hdc)
   ShaderSetMat4(GetShader("default"), "projection", projection);
   
   ecs_update_system(ecs, SpriteRenderSys, 1.0f);
-
-  //vec2 pos = {100.0f, 10.0f};
-  //vec2 size = {30.0f, 30.0f};
-  //float rotation = 0;
-  //DrawSprite(test, pos, size, rotation);
-
-
-  //pos[1] = 100.0f;
-  //DrawSprite(test, pos, size, rotation);
 
   SwapBuffers(hdc);
 }

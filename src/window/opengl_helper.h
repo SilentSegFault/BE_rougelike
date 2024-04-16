@@ -1,8 +1,7 @@
-/// @file
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef OPENGL_HELPER_H
+#define OPENGL_HELPER_H
 
-#include <Windows.h>
+#include <windows.h>
 
 /// @brief See [khronos registry](https://registry.khronos.org/OpenGL/extensions/ARB/WGL_ARB_create_context.txt).
 typedef HGLRC WINAPI wglCreateContextAttribsARB_t(HDC hdc, HGLRC hSharedContext, const int *attribList);
@@ -42,31 +41,10 @@ extern wglChoosePixelFormatARB_t *wglChoosePixelFormatARB;
 #define WGL_TYPE_RGBA_ARB          0x202B
 ///@}
 
-/// Callback function typedef for window resize event.
-///
-/// @param hwnd Handle to resized window.
-/// @param newWidth Width that window was resized to.
-/// @param newHeight Height that widnow was resized to.
-typedef void WindowSizing(HWND hwnd, int newWidth, int newHeight);
-
-/// @brief Window procedure for handling window messages.
-///
-/// For more info go to [Microsoft docs](https://learn.microsoft.com/en-us/windows/win32/winmsg/window-procedures).
-LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lParam);
 /// @brief Function for retriving openGL function pointer either via wgl or directly from dll.
 ///
 /// For more info go to [khronos wiki](https://www.khronos.org/opengl/wiki/Load_OpenGL_Functions#Windows).
 void* GetAnyGLFuncAddress(const char *name);
-/// @brief Function responsible for creating main window of application.
-///
-/// It also sets correct styles for openGL window and handles converting window size to client area size 
-/// For more see [Microsoft docs](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrect).
-///
-/// @param[in] title Title of window.
-/// @param[in] width Width of client area.
-/// @param[in] height Height of client area.
-/// @returns Handle to window.
-HWND CreateMainWindow(const char *title, int width, int height);
 /// @brief Function for initializing openGL context
 ///
 /// For more info go to[khronos wiki](https://www.khronos.org/opengl/wiki/Creating_an_OpenGL_Context_(WGL)).
@@ -76,16 +54,5 @@ HGLRC InitOpenGLContext(HDC hdc);
 /// @brief Wrapper for loading functions with using
 /// [glad](https://www.khronos.org/opengl/wiki/OpenGL_Loading_Library#glad_(Multi-Language_GL/GLES/EGL/GLX/WGL_Loader-Generator)).
 void LoadOpenGLFunctions(void);
-/// @brief Function for polling window events from message queue.
-///
-/// @param[out] bWindowShouldClose Returns if window received WM_QUIT message.
-void PollEvents(BOOL *bWindowShouldClose);
-/// @brief Sets callback for WM_SIZING and WM_SIZE message.
-///
-/// @param[in] callback Pointer to function which will be called when WM_SIZING or WM_SIZE messages are received.
-void SetWindowSizingCallback(WindowSizing *callback);
-
-extern unsigned int windowWidth; ///< Current width of window.
-extern unsigned int windowHeight; ///< Current height of window.
 
 #endif

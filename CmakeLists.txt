@@ -17,7 +17,8 @@ include_directories(${OPENGL_INCLUDE_DIR}
 
 set(SOURCES src/app.c
             src/game/game.c
-            src/window/window.c
+            src/window/win32_helper.c
+            src/window/opengl_helper.c
             src/shader/shader.c 
             src/texture/texture.c 
             src/utility/rand.c 

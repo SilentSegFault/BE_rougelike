@@ -1,7 +1,8 @@
 ///@file
 
 #include "rendering/rendering_sprites.h"
-#include "window/window.h"
+#include "window/win32_helper.h"
+#include "window/opengl_helper.h"
 #include "game/game.h"
 #include "gl/GL.h"
 #include "utility/rand.h"
