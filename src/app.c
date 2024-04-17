@@ -7,6 +7,7 @@
 #include "gl/GL.h"
 #include "utility/rand.h"
 #include "pico_headers/pico_log.h"
+#include <synchapi.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
@@ -80,6 +81,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
     PollEvents(&bWindowShouldClose);
     Update(deltaTime);
     Render(hMainWindowDC);
+
+    int st = (1000.f / 144.f) - deltaTime;
+    if(st > 0)
+      Sleep(st);
   }
 
   return 0;
