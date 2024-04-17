@@ -3,12 +3,9 @@
 #include "../resource_manager/resource_manager.h"
 #include "../rendering/rendering_sprites.h"
 #include "../ecs/ecs.h"
-#include "../utility/error.h"
-#include "../utility/rand.h"
 #include "glad/glad.h"
 #include "pico_headers/pico_log.h"
 #include "cglm/cglm.h"
-#include <winuser.h>
 
 ecs_t *ecs = NULL;
 
@@ -24,6 +21,8 @@ void InitGame(void)
 
   test.shader = LoadShader("../../assets/shaders/default.vert", "../../assets/shaders/default.frag", NULL, "default");
   test.texture = LoadTexture("../../assets/textures/smiley-face-icon.png", TRUE, "smiley");
+  LoadTexture("../../assets/textures/soldier.png", TRUE, "soldier");
+  LoadTexture("../../assets/textures/bullet.png", TRUE, "bullet");
 
   test.colorMask[0] = 1.0f;
   test.colorMask[1] = 1.0f;
@@ -38,14 +37,15 @@ void InitGame(void)
   CreateSmiley(ecs, 10.0f, 10.0f);
   CreateSmiley(ecs, 100.0f, 10.0f);
   CreateSmiley(ecs, 10.0f, 100.0f);
+  CreatePlayer(ecs, 200.0f, 200.0f);
 
   log_info("Game initialization finished.");
 }
 
 void Update(double deltaTime)
 {
-  if(KeyDown(KEY_MOUSELEFT))
-    CreateSmiley(ecs, mouseX - 15.0f, mouseY - 15.0f);
+  ecs_update_system(ecs, PlayerControllerSys, deltaTime);
+  ecs_update_system(ecs, ProjectileSys, deltaTime);
 }
 
 void Render(HDC hdc)
