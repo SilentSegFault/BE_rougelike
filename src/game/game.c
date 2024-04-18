@@ -8,7 +8,6 @@
 #include "cglm/cglm.h"
 #include <stdio.h>
 
-#define GLT_IMPLEMENTATION
 #include "glText/gltext.h"
 
 ecs_t *ecs = NULL;
@@ -60,7 +59,8 @@ void Render(HDC hdc)
 {
   glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-
+  // HACK: to force to use default shader because gltBeginDraw switches to internal shader without use of UseShader and it is not setting last used shader
+  UseShader(GetShader("default"));
 
   mat4 projection;
   glm_ortho(0, windowWidth, windowHeight, 0, -1.0f, 1.0f, projection);

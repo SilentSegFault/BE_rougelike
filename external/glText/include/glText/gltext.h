@@ -83,13 +83,10 @@ extern "C" {
 #define GLT_NULL 0
 #define GLT_NULL_HANDLE 0
 
-#ifdef GLT_IMPORTS
-#	define GLT_API extern
+#ifdef GLT_IMPLEMENTATION
+#	define GLT_API
 #else
-#	ifndef GLT_STATIC
-#		define GLT_STATIC
-#	endif
-#	define GLT_API static
+#	define GLT_API extern
 #endif
 
 #define GLT_LEFT 0

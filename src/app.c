@@ -4,6 +4,7 @@
 #include "window/win32_helper.h"
 #include "window/opengl_helper.h"
 #include "game/game.h"
+#include "glad/glad.h"
 #include "gl/GL.h"
 #include "utility/rand.h"
 #include "pico_headers/pico_log.h"
@@ -20,6 +21,10 @@
 
 #define PICO_ECS_IMPLEMENTATION
 #include "pico_headers/pico_ecs.h"
+
+#define GLT_IMPLEMENTATION
+#define GLT_MANUAL_VIEWPORT
+#include "glText/gltext.h"
 
 #include <time.h>
 
@@ -104,6 +109,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
 void ViewportSizingUpdate(HWND hwnd, int width, int height)
 {
   glViewport(0, 0, width, height);
+  gltViewport(width, height);
   Render(GetDC(hwnd));
 }
 
