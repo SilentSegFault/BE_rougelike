@@ -13,7 +13,8 @@ include_directories(${OPENGL_INCLUDE_DIR}
                     external/glad/include
                     external/cglm/include
                     external/stb/include
-                    external/pico_headers/include)
+                    external/pico_headers/include
+                    external/glText/include)
 
 set(SOURCES src/app.c
             src/game/game.c
