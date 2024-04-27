@@ -2,17 +2,18 @@
 #define SYSTEMS_H
 
 #include "components.h"
-#include "pico_headers/pico_ecs.h"
+#include "flecs/flecs.h"
 
-extern ecs_id_t SpriteRenderSys;
-ecs_ret_t SpriteRenderSystem(ecs_t *ecs, ecs_id_t *entities, int entityCount, ecs_dt_t dt, void *udata);
+void SpriteRenderSystem(ecs_iter_t *it);
 
-extern ecs_id_t PlayerControllerSys;
-ecs_ret_t PlayerControllerSystem(ecs_t *ecs, ecs_id_t *entities, int entityCount, ecs_dt_t dt, void *udata);
+void PlayerControllerSystem(ecs_iter_t *it);
 
-extern ecs_id_t ProjectileSys;
-ecs_ret_t ProjectileSystem(ecs_t *ecs, ecs_id_t *entities, int entityCount, ecs_dt_t dt, void *udata);
+void ProjectileSystem(ecs_iter_t *it);
 
-void RegisterSystems(ecs_t *ecs);
+extern ecs_entity_t SpriteRenderSys;
+extern ecs_entity_t PlayerControllerSys;
+extern ecs_entity_t ProjectileSys;
+
+void SystemsImport(ecs_world_t *world);
 
 #endif

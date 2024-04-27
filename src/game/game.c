@@ -10,7 +10,7 @@
 
 #include "glText/gltext.h"
 
-ecs_t *ecs = NULL;
+ecs_world_t *world = NULL;
 GLTtext *fpsText;
 unsigned long long frameCount = 0;
 
@@ -31,12 +31,12 @@ void InitGame(void)
   fpsText = gltCreateText();
 
   log_debug("Creating ecs context");
-  ecs = ecs_new(1024, NULL);
+  world = ecs_init();
 
-  RegisterComponents(ecs);
-  RegisterSystems(ecs);
+  ECS_IMPORT(world, Components);
+  ECS_IMPORT(world, Systems);
 
-  CreatePlayer(ecs, 200.0f, 200.0f);
+  CreatePlayer(world, 200.0f, 200.0f);
 
   log_info("Game initialization finished.");
 }
@@ -51,8 +51,8 @@ void Update(double deltaTime)
     gltSetText(fpsText, fps);
   }
 
-  ecs_update_system(ecs, PlayerControllerSys, deltaTime);
-  ecs_update_system(ecs, ProjectileSys, deltaTime);
+  ecs_run(world, PlayerControllerSys, deltaTime, NULL);
+  ecs_run(world, ProjectileSys, deltaTime, NULL);
 }
 
 void Render(HDC hdc)
@@ -66,7 +66,7 @@ void Render(HDC hdc)
   glm_ortho(0, windowWidth, windowHeight, 0, -1.0f, 1.0f, projection);
   ShaderSetMat4(GetShader("default"), "projection", projection);
   
-  ecs_update_system(ecs, SpriteRenderSys, 1.0f);
+  ecs_run(world, SpriteRenderSys, 0, NULL);
 
   gltBeginDraw();
 
@@ -83,6 +83,6 @@ void DisposeGame()
   DisposeSpriteRenderer();
   gltDeleteText(fpsText);
   gltTerminate();
-  ecs_free(ecs);
+  ecs_fini(world);
   log_info("Resources cleared.");
 }

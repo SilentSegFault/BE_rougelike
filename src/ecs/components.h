@@ -3,7 +3,7 @@
 
 #include "../sprite/sprite.h"
 #include "cglm/cglm.h"
-#include "pico_headers/pico_ecs.h"
+#include "flecs/flecs.h"
 #include "../window/win32_helper.h"
 
 typedef struct
@@ -11,15 +11,14 @@ typedef struct
   vec2 position;
   vec2 size;
   float rotation;
-} Transform;
-extern ecs_id_t TransformComp;
+}
+Transform;
 
 typedef struct
 {
   Sprite sprite;
   int layer;
 } SpriteRender;
-extern ecs_id_t SpriteRenderComp;
 
 typedef struct
 {
@@ -28,7 +27,6 @@ typedef struct
   float moveSpeed;
   float range;
 } Stats;
-extern ecs_id_t StatsComp;
 
 typedef struct
 {
@@ -41,7 +39,6 @@ typedef struct
     Key shoot;
   } Keys;
 } PlayerController;
-extern ecs_id_t PlayerControllerComp;
 
 typedef struct
 {
@@ -49,18 +46,13 @@ typedef struct
   float speed;
   float maxDistance;
 } Projectile;
-extern ecs_id_t ProjectileComp;
 
-typedef struct
-{
-  vec2 offset;
-  vec2 size;
-} BoxCollider;
-extern ecs_id_t BoxColliderComp;
+extern ECS_COMPONENT_DECLARE(Transform);
+extern ECS_COMPONENT_DECLARE(SpriteRender);
+extern ECS_COMPONENT_DECLARE(Stats);
+extern ECS_COMPONENT_DECLARE(PlayerController);
+extern ECS_COMPONENT_DECLARE(Projectile);
 
-/// @brief Registers ECS components.
-///
-/// @param[in] ecs Pointer to ecs context;
-void RegisterComponents(ecs_t *ecs);
+void ComponentsImport(ecs_world_t *world);
 
 #endif

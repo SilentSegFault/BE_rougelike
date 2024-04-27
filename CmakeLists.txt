@@ -8,13 +8,15 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 find_package(OpenGL REQUIRED)
 
 add_subdirectory(external/glad)
+add_subdirectory(external/flecs)
 
 include_directories(${OPENGL_INCLUDE_DIR}
                     external/glad/include
                     external/cglm/include
                     external/stb/include
                     external/pico_headers/include
-                    external/glText/include)
+                    external/glText/include
+                    external/flecs/include)
 
 set(SOURCES src/app.c
             src/game/game.c
@@ -34,5 +36,6 @@ set(SOURCES src/app.c
 
 
 add_executable(game WIN32 ${SOURCES})
+set_property(TARGET game PROPERTY C_STANDARD 99)
 
-target_link_libraries(game ${OPENGL_gl_LIBRARY} glad)
+target_link_libraries(game ${OPENGL_gl_LIBRARY} glad flecs Ws2_32)
