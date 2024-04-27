@@ -16,7 +16,9 @@ include_directories(${OPENGL_INCLUDE_DIR}
                     external/stb/include
                     external/pico_headers/include
                     external/glText/include
-                    external/flecs/include)
+                    external/flecs/include
+                    external/cute_headers/include
+                    )
 
 set(SOURCES src/app.c
             src/game/game.c

@@ -37,6 +37,9 @@ void InitGame(void)
   ECS_IMPORT(world, Systems);
 
   CreatePlayer(world, 200.0f, 200.0f);
+  CreateSmiley(world, 100.0f, 100.0f);
+  CreateSmiley(world, 100.0f, 200.0f);
+  CreateSmiley(world, 200.0f, 100.0f);
 
   log_info("Game initialization finished.");
 }

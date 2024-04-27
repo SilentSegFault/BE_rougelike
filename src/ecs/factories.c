@@ -29,6 +29,19 @@ ecs_entity_t CreateSmiley(ecs_world_t *world, float x, float y)
               }
           });
 
+  ecs_add(world, ent, Collider);
+
+  c2Circle c;
+  c.p.x = x;
+  c.p.y = y;
+  c.r = 15.0f;
+
+  ecs_set(world, ent, Collider,
+          {
+            .type = CT_CIRCLE,
+            .circleCollider = c
+          });
+
   return ent;
 }
 
@@ -120,6 +133,16 @@ ecs_entity_t CreateProjectile(ecs_world_t *world, char *textureName, vec2 pos, v
             .speed = speed,
             .direction = {dir[0], dir[1]}
           });
+  
+  c2Circle c;
+  c.p.x = pos[0];
+  c.p.y = pos[1];
+  c.r = size[0] * 0.5f;
 
+  ecs_set(world, ent, Collider,
+          {
+            .type = CT_CIRCLE,
+            .circleCollider = c
+          });
   return ent;
 }

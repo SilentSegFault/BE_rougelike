@@ -26,6 +26,9 @@
 #define GLT_MANUAL_VIEWPORT
 #include "glText/gltext.h"
 
+#define CUTE_C2_IMPLEMENTATION
+#include "cute_headers/cute_c2.h"
+
 #include <time.h>
 
 void InitLogger(char *logDirPath, log_level_t logLevel);

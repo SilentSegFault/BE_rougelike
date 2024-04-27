@@ -5,6 +5,7 @@
 #include "cglm/cglm.h"
 #include "flecs/flecs.h"
 #include "../window/win32_helper.h"
+#include "cute_headers/cute_c2.h"
 
 typedef struct
 {
@@ -47,11 +48,34 @@ typedef struct
   float maxDistance;
 } Projectile;
 
+typedef enum
+{
+  CT_CIRCLE = 0,
+  CT_CAPSULE,
+  CT_AABB,
+  CT_POLY
+} ColliderType;
+
+typedef struct
+{
+  ColliderType type;
+  union
+  {
+    c2Circle circleCollider;
+    c2Capsule capsuleCollider;
+    c2AABB AABBCollider;
+    c2Poly polyCollider;
+  };
+} Collider;
+
 extern ECS_COMPONENT_DECLARE(Transform);
 extern ECS_COMPONENT_DECLARE(SpriteRender);
 extern ECS_COMPONENT_DECLARE(Stats);
 extern ECS_COMPONENT_DECLARE(PlayerController);
 extern ECS_COMPONENT_DECLARE(Projectile);
+extern ECS_COMPONENT_DECLARE(Collider);
+
+extern ecs_entity_t BulletTag;
 
 void ComponentsImport(ecs_world_t *world);
 
