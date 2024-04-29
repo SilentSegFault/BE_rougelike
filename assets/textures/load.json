@@ -1,0 +1,5 @@
+{"load" : [
+  {"name" : "smiley", "source" : "smiley-face-icon.png", "alpha" : true},
+  {"name" : "soldier", "source" : "soldier.png", "alpha" : true},
+  {"name" : "bullet", "source" : "bullet.png", "alpha" : true}
+]}

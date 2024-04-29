@@ -43,34 +43,34 @@ void CheckCompileError(unsigned int object, char *type)
 
 Shader CompileShader(const char *vertexSource, const char *fragmentSource, const char *geometrySource)
 {
-  log_info("Compiling and linking shaders.");
+  log_trace("Compiling and linking shaders.");
   unsigned int sVertex, sFragment, sGeometry;
 
   //Vertex shader
-  log_debug("Compiling vertex shader.");
+  log_trace("Compiling vertex shader.");
   sVertex = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(sVertex, 1, &vertexSource, NULL);
   glCompileShader(sVertex);
   CheckCompileError(sVertex, "VERTEX");
-  log_debug("Vertex shader compiled.");
+  log_trace("Vertex shader compiled.");
 
   //Fragment shader
-  log_debug("Compiling fragment shader.");
+  log_trace("Compiling fragment shader.");
   sFragment = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(sFragment, 1, &fragmentSource, NULL);
   glCompileShader(sFragment);
   CheckCompileError(sFragment, "FRAGMENT");
-  log_debug("Fragment shader compiled.");
+  log_trace("Fragment shader compiled.");
 
   //Geometry shader
   if(geometrySource != NULL)
   {
-    log_debug("Compiling geometry shader.");
+    log_trace("Compiling geometry shader.");
     sGeometry = glCreateShader(GL_GEOMETRY_SHADER);
     glShaderSource(sGeometry, 1, &geometrySource, NULL);
     glCompileShader(sGeometry);
     CheckCompileError(sGeometry, "GEOMETRY");
-    log_debug("Geometry shader compiled.");
+    log_trace("Geometry shader compiled.");
   }
 
   //Shader program
@@ -80,17 +80,17 @@ Shader CompileShader(const char *vertexSource, const char *fragmentSource, const
   if(geometrySource != NULL)
     glAttachShader(shader, sGeometry);
 
-  log_debug("Linking shader program.");
+  log_trace("Linking shader program.");
   glLinkProgram(shader);
   CheckCompileError(shader, "PROGRAM");
-  log_debug("Shader program linked.");
+  log_trace("Shader program linked.");
 
   glDeleteShader(sVertex);
   glDeleteShader(sFragment);
   if(geometrySource != NULL)
     glDeleteShader(sGeometry);
 
-  log_info("Shaders compiled and linked.");
+  log_trace("Shaders compiled and linked.");
   return shader;
 }
 

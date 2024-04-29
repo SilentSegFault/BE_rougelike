@@ -76,7 +76,7 @@ ecs_entity_t CreatePlayer(ecs_world_t *world, float x, float y)
   ecs_set(world, ent, Stats,
           {
             .moveSpeed = 50,
-            .range = 300,
+            .range = 9999,
             .damage = 10,
             .health = 100
           });

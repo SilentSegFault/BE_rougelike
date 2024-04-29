@@ -1,0 +1,3 @@
+{"load" : [
+  {"name" : "test", "source" : "test.json", "loadOnStart" : true}
+]}

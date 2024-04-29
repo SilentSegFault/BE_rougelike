@@ -1,0 +1,4 @@
+{"load" : [
+  {"name" : "default", "vertexSource" : "default.vert", "fragmentSource" : "default.frag", "geometrySource" : null},
+  {"name" : "tilemap", "vertexSource" : "tilemap.vert", "fragmentSource" : "tilemap.frag", "geometrySource" : null}
+]}

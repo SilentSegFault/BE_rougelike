@@ -4,6 +4,8 @@
 
 #include "../shader/shader.h"
 #include "../texture/texture.h"
+#include "../tileset/tileset.h"
+#include "../map/map.h"
 
 /// @brief Loads shader program into memory
 ///
@@ -35,6 +37,19 @@ Texture2D LoadTexture(const char *file, int alpha, const char *name);
 /// @param name Texture2D name.
 /// @returns Handle to required Texture2D or NULL.
 Texture2D GetTexture(const char *name);
+
+Tileset LoadTileset(const char *file, int alpha, int tileWidth, int tileHeight, int spacing, int tileCount, int columns, const char *name);
+
+Tileset GetTileset(const char *name);
+
+MapLayer LoadMapLayer(int width, int height, Tileset tileset, int *tileData);
+
+Map LoadMap(int width, int height, int layersCount, MapLayer *layers, const char *name);
+
+Map GetMap(const char *name);
+
+void LoadAssets(char *pathToAssetsDir);
+
 /// @brief Disposes all resources.
 void DisposeResources();
 

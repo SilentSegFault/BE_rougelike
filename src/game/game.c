@@ -2,11 +2,15 @@
 #include "../window/win32_helper.h"
 #include "../resource_manager/resource_manager.h"
 #include "../rendering/rendering_sprites.h"
+#include "../rendering/rendering_tilemaps.h"
 #include "../ecs/ecs.h"
 #include "glad/glad.h"
 #include "pico_headers/pico_log.h"
 #include "cglm/cglm.h"
+#include <minwindef.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "glText/gltext.h"
 
@@ -23,10 +27,7 @@ void InitGame(void)
   InitSpriteRenderer();
   gltInit();
 
-  LoadShader("../../assets/shaders/default.vert", "../../assets/shaders/default.frag", NULL, "default");
-  LoadTexture("../../assets/textures/smiley-face-icon.png", TRUE, "smiley");
-  LoadTexture("../../assets/textures/soldier.png", TRUE, "soldier");
-  LoadTexture("../../assets/textures/bullet.png", TRUE, "bullet");
+  LoadAssets("../../assets");
 
   fpsText = gltCreateText();
 
@@ -37,8 +38,6 @@ void InitGame(void)
   ECS_IMPORT(world, Systems);
 
   CreatePlayer(world, 200.0f, 200.0f);
-  CreateSmiley(world, 100.0f, 100.0f);
-  CreateSmiley(world, 100.0f, 200.0f);
   CreateSmiley(world, 200.0f, 100.0f);
 
   log_info("Game initialization finished.");
@@ -54,6 +53,11 @@ void Update(double deltaTime)
     gltSetText(fpsText, fps);
   }
 
+  if(KeyDown(KEY_C))
+  {
+    CreateSmiley(world, mouseX, mouseY);
+  }
+
   ecs_run(world, PlayerControllerSys, deltaTime, NULL);
   ecs_run(world, ProjectileSys, deltaTime, NULL);
 }
@@ -62,11 +66,16 @@ void Render(HDC hdc)
 {
   glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-  // HACK: to force to use default shader because gltBeginDraw switches to internal shader without use of UseShader and it is not setting last used shader
-  UseShader(GetShader("default"));
 
   mat4 projection;
   glm_ortho(0, windowWidth, windowHeight, 0, -1.0f, 1.0f, projection);
+
+  Map map = GetMap("test");
+  DrawTilemap(&map, GetShader("tilemap"), (vec2){0.0f, 0.0f}, (vec2){windowWidth, windowHeight}, 0, projection);
+
+  // HACK: to force to use default shader because gltBeginDraw switches to internal shader without use of UseShader and it is not setting last used shader
+  UseShader(GetShader("default"));
+
   ShaderSetMat4(GetShader("default"), "projection", projection);
   
   ecs_run(world, SpriteRenderSys, 0, NULL);

@@ -9,6 +9,7 @@ find_package(OpenGL REQUIRED)
 
 add_subdirectory(external/glad)
 add_subdirectory(external/flecs)
+add_subdirectory(external/cJSON)
 
 include_directories(${OPENGL_INCLUDE_DIR}
                     external/glad/include
@@ -18,6 +19,7 @@ include_directories(${OPENGL_INCLUDE_DIR}
                     external/glText/include
                     external/flecs/include
                     external/cute_headers/include
+                    external/cJSON/include
                     )
 
 set(SOURCES src/app.c
@@ -29,7 +31,9 @@ set(SOURCES src/app.c
             src/utility/rand.c 
             src/utility/error.c
             src/utility/ut_math.c
+            src/utility/loadFileSource.c
             src/rendering/rendering_sprites.c 
+            src/rendering/rendering_tilemaps.c
             src/resource_manager/resource_manager.c
             src/ecs/components.c
             src/ecs/systems.c
@@ -40,4 +44,4 @@ set(SOURCES src/app.c
 add_executable(game WIN32 ${SOURCES})
 set_property(TARGET game PROPERTY C_STANDARD 99)
 
-target_link_libraries(game ${OPENGL_gl_LIBRARY} glad flecs Ws2_32)
+target_link_libraries(game ${OPENGL_gl_LIBRARY} glad flecs cJSON Ws2_32)
