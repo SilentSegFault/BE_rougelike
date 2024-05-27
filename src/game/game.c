@@ -1,5 +1,6 @@
 #include "game.h"
 #include "../window/window.h"
+#include "../window/win32_helper.h"
 #include "stb/stb_ds.h"
 #include "flecs/flecs.h"
 #include "../ecs/factories.h"
@@ -22,6 +23,9 @@ void Update(double deltaTime)
 {
   currentGame.gameTime += deltaTime;
   currentGame.frameCount += 1;
+
+  if(KeyDown(KEY_F11))
+    ToggleFullScreen();
 
   UpdateEntities(deltaTime);
 }

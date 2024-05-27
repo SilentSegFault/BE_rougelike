@@ -52,6 +52,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lPar
 
     case WM_SIZE:
     case WM_SIZING:
+    case WM_MOVE:
+    case WM_MOVING:
       {
         RECT rc;
         GetClientRect(hwnd, &rc);

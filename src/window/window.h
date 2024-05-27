@@ -13,6 +13,7 @@ typedef struct
   int height;
   BOOL shouldClose;
   mat4 projection;
+  WINDOWPLACEMENT prevPlacement;
 } Window;
 
 void InitGameWindow(const char *name, int width, int height, BOOL resizable);
@@ -24,5 +25,6 @@ void PollGameWindowEvents();
 BOOL GameWindowShouldClose();
 mat4* GetProjectionMatrix();
 void UpdateProjectionMatrix();
+void ToggleFullScreen();
 
 #endif
