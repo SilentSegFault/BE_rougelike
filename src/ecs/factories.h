@@ -4,6 +4,6 @@
 #include "flecs/flecs.h"
 #include "cglm/types.h"
 
-void CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float rotation);
+ecs_entity_t CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float rotation);
 
 #endif

@@ -8,7 +8,7 @@
 -- Entity.tags = {} - not implemented
 --
 Human = Entity:New({
-	size = { width = 50, height = 50 },
+	size = { width = 80, height = 80 },
 	render = { sprite = "human", drawLayer = 0 },
 	stats = { health = 100, speed = 50 },
 })
@@ -38,6 +38,19 @@ function Human:OnUpdate(deltaTime)
 
 	if KeyPressed("key_s") then
 		MoveEntity(self, 0, self.stats.speed * deltaTime)
+	end
+
+	if KeyPressed("mouse_left") then
+		local x, y = GetMousePos()
+		SetEntityPos(self, x, y)
+	end
+	if KeyDown("key_p") then
+		local mouseX, mouseY = GetMousePos()
+		local posX, posY = GetEntityPos(self)
+
+		local id = SpawnEntity("Bullet", posX, posY, 0)
+		local e = Entities[id]
+		EntityLookAt(e, mouseX, mouseY)
 	end
 end
 

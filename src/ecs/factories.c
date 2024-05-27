@@ -4,7 +4,7 @@
 #include "../logger/logger.h"
 #include "../resource_management/assets_library.h"
 
-void CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float rotation)
+ecs_entity_t CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float rotation)
 {
   ecs_entity_t ent = ecs_new_id(world);
   LuaEntity luaEnt;
@@ -29,4 +29,6 @@ void CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float r
                                      .flipY = FALSE});
 
   CallOnCreate(ent);
+
+  return ent;
 }

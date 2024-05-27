@@ -14,13 +14,17 @@ void SpriteRenderSystem(ecs_iter_t *it)
   for(int i = 0; i < it->count; i++)
   {
     if(spriteRender[i].visible)
+    {
+      vec2 pos = {transform[i].position[0] - transform[i].size[0] * 0.5f, transform[i].position[1] - transform[i].size[1] * 0.5f};
+
       DrawSprite(spriteRender[i].sprite,
                  GetProjectionMatrix(),
-                 transform[i].position,
+                 pos,
                  transform[i].size,
                  transform[i].rotation,
                  spriteRender[i].flipX,
                  spriteRender[i].flipY);
+    }
   }
 }
 void SystemsModuleImport(ecs_world_t *world)

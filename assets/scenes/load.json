@@ -1,5 +1,5 @@
 {"load" : [
   {"name" : "testScene", "entities" : [
-    {"name": "player", "type" : "Human", "position" : {"x" : 10, "y" : 20}, "rotation" : 0}
+    {"name": "player", "type" : "Human", "position" : {"x" : 100, "y" : 100}, "rotation" : 0}
   ]}
 ]}

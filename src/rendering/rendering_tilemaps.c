@@ -1,7 +1,7 @@
 #include "rendering_tilemaps.h"
 #include "glad/glad.h"
 
-void DrawTilemap(Tilemap *map, Shader *shader, mat4 projection, vec2 position, vec2 size, float rotation)
+void DrawTilemap(Tilemap *map, Shader *shader, mat4 *projection, vec2 position, vec2 size, float rotation)
 {
   UseShader(*shader);
 
@@ -14,7 +14,7 @@ void DrawTilemap(Tilemap *map, Shader *shader, mat4 projection, vec2 position, v
   glm_scale(model, (vec3){size[0] / map->width, size[1] / map->height, 1.0f});
 
   ShaderSetMat4(*shader, "model", model, TRUE);
-  ShaderSetMat4(*shader, "projection", projection, FALSE);
+  ShaderSetMat4(*shader, "projection", *projection, FALSE);
 
   for(int i = 0; i < map->layersCount; i++)
   {
