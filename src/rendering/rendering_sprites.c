@@ -1,7 +1,7 @@
 #include "rendering_sprites.h"
 #include "cglm/cglm.h"
 #include "glad/glad.h"
-#include "pico_headers/pico_log.h"
+#include <minwindef.h>
 
 static unsigned int rendererVAO;
 void InitSpriteRenderer()
@@ -34,9 +34,9 @@ void InitSpriteRenderer()
   glBindVertexArray(0);
 }
 
-void DrawSprite(Sprite sprite, vec2 position, vec2 size, float rotation)
+void DrawSprite(Sprite *sprite, mat4 *projection, vec2 position, vec2 size, float rotation, int flipX, int flipY)
 {
-  UseShader(sprite.shader);
+  UseShader(sprite->shader);
 
   mat4 model = GLM_MAT4_IDENTITY_INIT;
 
@@ -46,11 +46,14 @@ void DrawSprite(Sprite sprite, vec2 position, vec2 size, float rotation)
 
   glm_scale(model, (vec3){size[0], size[1], 1.0f});
 
-  ShaderSetMat4(sprite.shader, "model", model);
-  ShaderSetVector3(sprite.shader, "spriteColor", sprite.colorMask);
+  ShaderSetMat4(sprite->shader, "model", model, TRUE);
+  ShaderSetVector3(sprite->shader, "spriteColor", sprite->colorMask, FALSE);
+  ShaderSetMat4(sprite->shader, "projection", *projection, FALSE);
+  ShaderSetInteger(sprite->shader, "flipX", flipX, FALSE);
+  ShaderSetInteger(sprite->shader, "flipY", flipY, FALSE);
 
   glActiveTexture(GL_TEXTURE0);
-  BindTexture(sprite.texture);
+  BindTexture(sprite->texture);
 
   glBindVertexArray(rendererVAO);
   glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -59,6 +62,5 @@ void DrawSprite(Sprite sprite, vec2 position, vec2 size, float rotation)
 
 void DisposeSpriteRenderer()
 {
-  log_debug("Disposing sprite renderer.");
   glDeleteVertexArrays(1, &rendererVAO);
 }

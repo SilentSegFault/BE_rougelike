@@ -1,0 +1,20 @@
+{"load" : [
+  {
+    "name" : "default",
+    "shader" : "sprite",
+    "texture" : "default",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "smiley",
+    "shader" : "sprite",
+    "texture" : "smiley",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "human",
+    "shader" : "sprite",
+    "texture" : "human",
+    "colorMask" : [1.0, 1.0, 1.0]
+  }
+]}

@@ -1,0 +1,4 @@
+{"load" : [
+  {"name" : "arial", "source" : "arial.ttf", "baseHeight" : 36},
+  {"name" : "jacquard12", "source" : "Jacquard12-Regular.ttf", "baseHeight" : 36}
+]}

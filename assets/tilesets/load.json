@@ -1,12 +1,10 @@
 {"load" : [
   {
-    "name" : "tilemap1",
-    "source" : "../textures/tilemap.png",
-    "alpha" : true,
-    "tileWidth" : 16,
-    "tileHeight" : 16,
-    "spacing" : 1,
-    "tileCount" : 132,
-    "columns" : 12
+    "name" : "default",
+    "texture" : "default",
+    "tileWidth" : 200,
+    "tileHeight" : 200,
+    "tileCount" : 1,
+    "columns" : 1
   }
 ]}

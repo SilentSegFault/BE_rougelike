@@ -1,7 +1,7 @@
 #include "opengl_helper.h"
-#include "pico_headers/pico_log.h"
 #include "glad/glad.h"
 #include "../utility/error.h"
+#include "../logger/logger.h"
 
 wglCreateContextAttribsARB_t *wglCreateContextAttribsARB;
 wglChoosePixelFormatARB_t *wglChoosePixelFormatARB;
@@ -21,7 +21,6 @@ void* GetAnyGLFuncAddress(const char *name)
 
 void _InitGLContextExtensions(void)
 {
-  log_debug("Initializing openGL extension required for creating openGL context.");
   WNDCLASS wc = {0};
   wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
   wc.lpfnWndProc = DefWindowProc;
@@ -30,7 +29,7 @@ void _InitGLContextExtensions(void)
 
   if(!RegisterClass(&wc))
   {
-    log_fatal("Failed to initialize dummy window class.");
+    LogFatal("Failed to initialize dummy window class.");
     FATAL_ERROR();
   }
 
@@ -40,7 +39,7 @@ void _InitGLContextExtensions(void)
 
   if(hDummyWindow == NULL)
   {
-    log_fatal("Failed to create dummy window.");
+    LogFatal("Failed to create dummy window.");
     FATAL_ERROR();
   }
 
@@ -61,26 +60,26 @@ void _InitGLContextExtensions(void)
   int pixelFormat = ChoosePixelFormat(hDummyDC, &pfd);
   if(!pixelFormat)
   {
-    log_fatal("Failed to initialize dummy pixel format.");
+    LogFatal("Failed to initialize dummy pixel format.");
     FATAL_ERROR();
   }
 
   if(!SetPixelFormat(hDummyDC, pixelFormat, &pfd))
   {
-    log_fatal("Failed to set dummy pixel format.");
+    LogFatal("Failed to set dummy pixel format.");
     FATAL_ERROR();
   }
 
   HGLRC hDummyRC = wglCreateContext(hDummyDC);
   if(!hDummyRC)
   {
-    log_fatal("Failed to create dummy rendering context.");
+    LogFatal("Failed to create dummy rendering context.");
     FATAL_ERROR();
   }
 
   if(!wglMakeCurrent(hDummyDC, hDummyRC))
   {
-    log_fatal("Failed setting current dummy rendering context.");
+    LogFatal("Failed setting current dummy rendering context.");
     FATAL_ERROR();
   }
 
@@ -89,7 +88,7 @@ void _InitGLContextExtensions(void)
 
   if(!wglCreateContextAttribsARB || ! wglChoosePixelFormatARB)
   {
-    log_fatal("Failed loading functions required for setting openGL context.");
+    LogFatal("Failed loading functions required for setting openGL context.");
     FATAL_ERROR();
   }
 
@@ -97,13 +96,10 @@ void _InitGLContextExtensions(void)
   wglDeleteContext(hDummyRC);
   ReleaseDC(hDummyWindow, hDummyDC);
   DestroyWindow(hDummyWindow);
-
-  log_debug("openGL extensions required for creating context initialized.");
 }
 
 HGLRC InitOpenGLContext(HDC hdc)
 {
-  log_info("Initializing openGL context.");
   _InitGLContextExtensions();
 
 
@@ -126,7 +122,7 @@ HGLRC InitOpenGLContext(HDC hdc)
 
   if(!nNumFormats)
   {
-    log_fatal("Failed to choose pixel format.");
+    LogFatal("Failed to choose pixel format.");
     FATAL_ERROR();
   }
 
@@ -134,7 +130,7 @@ HGLRC InitOpenGLContext(HDC hdc)
   DescribePixelFormat(hdc, iPixelFormat, sizeof(pfd), &pfd);
   if(!SetPixelFormat(hdc, iPixelFormat, &pfd))
   {
-    log_fatal("Failed to set pixel format.");
+    LogFatal("Failed to set pixel format.");
     FATAL_ERROR();
   }
 
@@ -149,17 +145,15 @@ HGLRC InitOpenGLContext(HDC hdc)
   HGLRC hglrc = wglCreateContextAttribsARB(hdc, 0, contextAttribs);
   if(!hglrc)
   {
-    log_fatal("Failed to create context attributes.");
+    LogFatal("Failed to create context attributes.");
     FATAL_ERROR();
   }
 
   if(!wglMakeCurrent(hdc, hglrc))
   {
-    log_fatal("Failed to set current rendering context.");
+    LogFatal("Failed to set current rendering context.");
     FATAL_ERROR();
   }
-
-  log_info("OpenGL context initialized.");
   return hglrc;
 }
 
@@ -167,7 +161,7 @@ void LoadOpenGLFunctions(void)
 {
   if(!gladLoadGLLoader(GetAnyGLFuncAddress))
   {
-    log_fatal("Failed to load openGL function pointers.");
+    LogFatal("Failed to load openGL function pointers.");
     FATAL_ERROR();
   }
 }

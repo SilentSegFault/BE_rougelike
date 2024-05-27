@@ -1,4 +1,5 @@
 {"load" : [
-  {"name" : "default", "vertexSource" : "default.vert", "fragmentSource" : "default.frag", "geometrySource" : null},
-  {"name" : "tilemap", "vertexSource" : "tilemap.vert", "fragmentSource" : "tilemap.frag", "geometrySource" : null}
+  {"name" : "sprite", "vertexSource" : "sprite.vert", "fragmentSource" : "sprite.frag", "geometrySource" : null},
+  {"name" : "tilemap", "vertexSource" : "tilemap.vert", "fragmentSource" : "tilemap.frag", "geometrySource" : null},
+  {"name" : "text", "vertexSource" : "text.vert", "fragmentSource" : "text.frag", "geometrySource" : null}
 ]}

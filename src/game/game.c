@@ -1,100 +1,55 @@
 #include "game.h"
-#include "../window/win32_helper.h"
-#include "../resource_manager/resource_manager.h"
-#include "../rendering/rendering_sprites.h"
-#include "../rendering/rendering_tilemaps.h"
-#include "../ecs/ecs.h"
-#include "glad/glad.h"
-#include "pico_headers/pico_log.h"
-#include "cglm/cglm.h"
-#include <minwindef.h>
-#include <stdio.h>
+#include "../window/window.h"
+#include "stb/stb_ds.h"
+#include "flecs/flecs.h"
+#include "../ecs/factories.h"
+#include "../ecs/components.h"
+#include "../ecs/systems.h"
+#include "../scripting/script_engine.h"
 #include <stdlib.h>
-#include <string.h>
+#include "../resource_management/assets_library.h"
+#include "../logger/logger.h"
 
-#include "glText/gltext.h"
-
-ecs_world_t *world = NULL;
-GLTtext *fpsText;
-unsigned long long frameCount = 0;
+Game currentGame = {0};
+ecs_world_t *world;
 
 void InitGame(void)
 {
-  log_info("Game initialization started.");
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glViewport(0, 0, windowWidth, windowHeight);
-  InitSpriteRenderer();
-  gltInit();
-
-  LoadAssets("../../assets");
-
-  fpsText = gltCreateText();
-
-  log_debug("Creating ecs context");
-  world = ecs_init();
-
-  ECS_IMPORT(world, Components);
-  ECS_IMPORT(world, Systems);
-
-  CreatePlayer(world, 200.0f, 200.0f);
-  CreateSmiley(world, 200.0f, 100.0f);
-
-  log_info("Game initialization finished.");
+  LoadScene(GetScene("testScene"));
 }
 
 void Update(double deltaTime)
 {
-  frameCount++;
-  if(frameCount % 10 == 0)
-  {
-    char fps[50];
-    sprintf_s(fps, 50, "%i FPS", (int)(1.0/deltaTime));
-    gltSetText(fpsText, fps);
-  }
+  currentGame.gameTime += deltaTime;
+  currentGame.frameCount += 1;
 
-  if(KeyDown(KEY_C))
-  {
-    CreateSmiley(world, mouseX, mouseY);
-  }
-
-  ecs_run(world, PlayerControllerSys, deltaTime, NULL);
-  ecs_run(world, ProjectileSys, deltaTime, NULL);
+  UpdateEntities(deltaTime);
 }
 
-void Render(HDC hdc)
+void Render(void)
 {
-  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  mat4 projection;
-  glm_ortho(0, windowWidth, windowHeight, 0, -1.0f, 1.0f, projection);
-
-  Map map = GetMap("test");
-  DrawTilemap(&map, GetShader("tilemap"), (vec2){0.0f, 0.0f}, (vec2){windowWidth, windowHeight}, 0, projection);
-
-  // HACK: to force to use default shader because gltBeginDraw switches to internal shader without use of UseShader and it is not setting last used shader
-  UseShader(GetShader("default"));
-
-  ShaderSetMat4(GetShader("default"), "projection", projection);
-  
-  ecs_run(world, SpriteRenderSys, 0, NULL);
-
-  gltBeginDraw();
-
-  gltDrawText2D(fpsText, 0, 0, 1.0f);
-
-  gltEndDraw();
-
-  SwapBuffers(hdc);
+  UpdateProjectionMatrix();
+  ecs_run(GetCurrentScene()->world, ecs_id(SpriteRenderSystem), 0, NULL);
 }
 
-void DisposeGame()
+void DisposeGame(void)
 {
-  log_info("Clearing resources.");
-  DisposeSpriteRenderer();
-  gltDeleteText(fpsText);
-  gltTerminate();
-  ecs_fini(world);
-  log_info("Resources cleared.");
+  ecs_fini(GetCurrentScene()->world);
 }
+
+void LoadScene(Scene *scene)
+{
+  InitScene(scene);
+  currentGame.currentScene = scene;
+}
+
+Scene* GetCurrentScene()
+{
+  return currentGame.currentScene;
+}
+
+void UnloadScene()
+{
+}
+
+

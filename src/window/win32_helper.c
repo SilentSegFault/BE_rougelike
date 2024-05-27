@@ -1,8 +1,6 @@
 #include "win32_helper.h"
-#include "pico_headers/pico_log.h"
 #include "../utility/error.h"
-#include <minwindef.h>
-#include <winuser.h>
+#include "../logger/logger.h"
 
 unsigned int windowWidth, windowHeight;
 int mouseX, mouseY;
@@ -22,12 +20,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lPar
       break;
 
     case WM_CLOSE:
-      log_trace("Close message received.");
       DestroyWindow(hwnd);
       break;
 
     case WM_DESTROY:
-      log_trace("Destroy message received.");
       PostQuitMessage(0);
       break;
 
@@ -57,7 +53,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lPar
     case WM_SIZE:
     case WM_SIZING:
       {
-        log_trace("Sizing message recived.");
         RECT rc;
         GetClientRect(hwnd, &rc);
         windowWidth = rc.right - rc.left;
@@ -76,7 +71,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lPar
 
 HWND CreateMainWindow(const char *title, int width, int height)
 {
-  log_info("Creating main window.");
   WNDCLASSEX wc;
 
   wc.cbSize        = sizeof(wc);
@@ -94,28 +88,26 @@ HWND CreateMainWindow(const char *title, int width, int height)
 
   if(!RegisterClassEx(&wc))
   {
-    log_fatal("Failed to initialize main window class.");
+    LogFatal("Failed to initialize main window class.");
     FATAL_ERROR();
   }
 
   RECT rc;
   SetRect(&rc, 0, 0, width, height);
-  AdjustWindowRectEx(&rc, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
+  AdjustWindowRectEx(&rc, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_APPWINDOW);
   windowWidth  = rc.right  - rc.left;
   windowHeight = rc.bottom - rc.top;
   
 
-  HWND hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_TOPMOST, wc.lpszClassName, title, WS_OVERLAPPEDWINDOW,
+  HWND hwnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, title, WS_OVERLAPPEDWINDOW,
                              CW_USEDEFAULT, CW_USEDEFAULT, windowWidth, windowHeight,
                              NULL, NULL, GetModuleHandle(NULL), NULL);
 
   if(hwnd == NULL)
   {
-    log_fatal("Failed to create main window.");
+    LogFatal("Failed to create main window.");
     FATAL_ERROR();
   }
-
-  log_info("Main window created.");
   return hwnd;
 }
 
@@ -144,10 +136,14 @@ void PollEvents(BOOL *bWindowShouldClose)
 
 BOOL KeyPressed(Key key)
 {
+  if(key < 0)
+    return FALSE;
   return keyStates[key].IsKeyDown;
 }
 
 BOOL KeyDown(Key key)
 {
+  if(key < 0)
+    return FALSE;
   return keyStates[key].IsKeyDown && (GetAsyncKeyState(key) & 0x1) && !keyStates[key].WasKeyDown;
 }

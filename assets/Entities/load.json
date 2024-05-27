@@ -1,9 +1,0 @@
-{"entities" : [
-  {
-    "name" : "testEntity",
-    "type" : "enemy",
-    "stats" : {},
-    "movementBehaviour" : {},
-    "attackBehaviour" : {}
-  }
-]}

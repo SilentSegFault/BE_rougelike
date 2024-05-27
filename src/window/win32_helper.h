@@ -1,53 +1,26 @@
-/// @file
-/// @brief Provides helper functions for managing win32 window.
 #ifndef WIN32_HELPER_H
 #define WIN32_HELPER_H
 
 #include <windows.h>
 #include <winuser.h>
+#include "window.h"
 
-extern unsigned int windowWidth; ///< Current width of window.
-extern unsigned int windowHeight; ///< Current height of window.
 extern int mouseX;
 extern int mouseY;
 
-/// Callback function typedef for window resize event.
-///
-/// @param hwnd Handle to resized window.
-/// @param newWidth Width that window was resized to.
-/// @param newHeight Height that widnow was resized to.
 typedef void WindowSizing(HWND hwnd, int newWidth, int newHeight);
 
-/// @brief Window procedure for handling window messages.
-///
-/// For more info go to [Microsoft docs](https://learn.microsoft.com/en-us/windows/win32/winmsg/window-procedures).
 LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lParam);
 
-/// @brief Function responsible for creating main window of application.
-///
-/// It also sets correct styles for openGL window and handles converting window size to client area size 
-/// For more see [Microsoft docs](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrect).
-///
-/// @param[in] title Title of window.
-/// @param[in] width Width of client area.
-/// @param[in] height Height of client area.
-/// @returns Handle to window.
 HWND CreateMainWindow(const char *title, int width, int height);
 
-/// @brief Sets callback for WM_SIZING and WM_SIZE message.
-///
-/// @param[in] callback Pointer to function which will be called when WM_SIZING or WM_SIZE messages are received.
 void SetWindowSizingCallback(WindowSizing *callback);
 
-/// @brief polling window messages from message queue
-///
-/// For more info go to [Microsoft Docs](https://learn.microsoft.com/en-us/windows/win32/winmsg/using-messages-and-message-queues).
-///
-/// @param[out] bWindowShouldClose indicates if WM_CLOSE message was received.
 void PollEvents(BOOL *bWindowShouldClose);
 
 typedef enum
 {
+  KEY_NONE  = -1,
   KEY_MOUSELEFT = VK_LBUTTON,
   KEY_MOUSERIGHT = VK_RBUTTON,
   KEY_MOUSEMIDDLE = VK_MBUTTON,

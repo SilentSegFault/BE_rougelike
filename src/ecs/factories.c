@@ -1,148 +1,32 @@
 #include "factories.h"
 #include "components.h"
-#include "../resource_manager/resource_manager.h"
-#include "pico_headers/pico_log.h"
+#include "../scripting/script_engine.h"
+#include "../logger/logger.h"
+#include "../resource_management/assets_library.h"
 
-ecs_entity_t CreateSmiley(ecs_world_t *world, float x, float y)
+void CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float rotation)
 {
   ecs_entity_t ent = ecs_new_id(world);
+  LuaEntity luaEnt;
 
-  ecs_add(world, ent, Transform);
+  if(!EntityExists(entity))
+  {
+    LogWarning("entity `%s` doesn't exists!", entity);
+    luaEnt = CreateLuaEntity("Entity", ent);
+  }
+  else
+  {
+    luaEnt = CreateLuaEntity(entity, ent);
+  }
 
-  ecs_set(world, ent, Transform,
-          {
-            .position = {x, y},
-            .size = {30.0f, 30.0f},
-            .rotation = 0
-          });
+  ecs_set(world, ent, Transform, {.rotation = rotation,
+                                  .position = {position[0], position[1]},
+                                  .size = {luaEnt.size.width, luaEnt.size.height}});
+  ecs_set(world, ent, SpriteRender, {.drawLayer = luaEnt.render.drawLayer,
+                                     .sprite = GetSprite(luaEnt.render.sprite),
+                                     .visible = TRUE,
+                                     .flipX = FALSE,
+                                     .flipY = FALSE});
 
-  ecs_add(world, ent, SpriteRender);
-
-  ecs_set(world, ent, SpriteRender,
-          {
-            .layer = 0,
-            .sprite =
-              {
-                .shader = GetShader("default"),
-                .texture = GetTexture("smiley"),
-                .colorMask = {1.0f, 1.0f, 1.0f}
-              }
-          });
-
-  ecs_add(world, ent, Collider);
-
-  c2Circle c;
-  c.p.x = x;
-  c.p.y = y;
-  c.r = 15.0f;
-
-  ecs_set(world, ent, Collider,
-          {
-            .type = CT_CIRCLE,
-            .circleCollider = c
-          });
-
-  return ent;
-}
-
-ecs_entity_t CreatePlayer(ecs_world_t *world, float x, float y)
-{
-  ecs_entity_t ent = ecs_new_id(world);
-
-  ecs_add(world, ent, Transform);
-
-  ecs_set(world, ent, Transform,
-          {
-            .position = {x, y},
-            .size = {49.0f, 30.0f},
-            .rotation = 0
-          });
-
-  ecs_add(world, ent, SpriteRender);
-
-  ecs_set(world, ent, SpriteRender,
-          {
-            .layer = 0,
-            .sprite =
-              {
-                .shader = GetShader("default"),
-                .texture = GetTexture("soldier"),
-                .colorMask = {1.0f, 1.0f, 1.0f}
-              }
-          });
-
-  ecs_add(world, ent, Stats);
-
-  ecs_set(world, ent, Stats,
-          {
-            .moveSpeed = 50,
-            .range = 9999,
-            .damage = 10,
-            .health = 100
-          });
-
-  ecs_add(world, ent, PlayerController);
-
-  ecs_set(world, ent, PlayerController,
-          {
-            .Keys =
-              {
-                .moveUp = KEY_W,
-                .moveDown = KEY_S,
-                .moveLeft = KEY_A,
-                .moveRight = KEY_D,
-                .shoot = KEY_MOUSELEFT
-              }
-          });
-
-  return ent;
-}
-
-ecs_entity_t CreateProjectile(ecs_world_t *world, char *textureName, vec2 pos, vec2 dir,
-                              vec2 size, float rotation, float speed, float maxDistance)
-{
-  ecs_entity_t ent = ecs_new_id(world);
-  
-  ecs_add(world, ent, Transform);
-
-  ecs_set(world, ent, Transform,
-          {
-            .position = {pos[0], pos[1]},
-            .size = {size[0], size[1]},
-            .rotation = rotation
-          });
-
-  ecs_add(world, ent, SpriteRender);
-
-  ecs_set(world, ent, SpriteRender,
-          {
-            .layer = 0,
-            .sprite =
-              {
-                .shader = GetShader("default"),
-                .texture = GetTexture(textureName),
-                .colorMask = {1.0f, 1.0f, 1.0f}
-              }
-          });
-
-  ecs_add(world, ent, Projectile);
-
-  ecs_set(world, ent, Projectile,
-          {
-            .maxDistance = maxDistance,
-            .speed = speed,
-            .direction = {dir[0], dir[1]}
-          });
-  
-  c2Circle c;
-  c.p.x = pos[0];
-  c.p.y = pos[1];
-  c.r = size[0] * 0.5f;
-
-  ecs_set(world, ent, Collider,
-          {
-            .type = CT_CIRCLE,
-            .circleCollider = c
-          });
-  return ent;
+  CallOnCreate(ent);
 }

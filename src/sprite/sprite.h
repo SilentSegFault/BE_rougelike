@@ -11,6 +11,9 @@ typedef struct
   Shader shader;
   Texture2D texture;
   vec3 colorMask;
+
 } Sprite;
+
+Sprite CreateSprite(Shader shader, Texture2D texture, vec3 colorMask);
 
 #endif

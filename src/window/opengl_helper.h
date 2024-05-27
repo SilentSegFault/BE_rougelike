@@ -3,9 +3,7 @@
 
 #include <windows.h>
 
-/// @brief See [khronos registry](https://registry.khronos.org/OpenGL/extensions/ARB/WGL_ARB_create_context.txt).
 typedef HGLRC WINAPI wglCreateContextAttribsARB_t(HDC hdc, HGLRC hSharedContext, const int *attribList);
-/// @brief Pointer for retrieved function.
 extern wglCreateContextAttribsARB_t *wglCreateContextAttribsARB;
 
 /// @name Context attributes
