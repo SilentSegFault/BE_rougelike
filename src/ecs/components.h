@@ -6,12 +6,16 @@
 #include "../sprite/sprite.h"
 #include "../tilemap/tilemap.h"
 
-typedef struct
+typedef struct Transform Transform;
+struct Transform
 {
   vec2 position;
   vec2 size;
+  vec2 scale;
   float rotation;
-} Transform;
+
+  int parent;
+};
 
 typedef struct
 {
@@ -29,18 +33,34 @@ typedef struct
 
 typedef struct
 {
+  char *text;
+  char *font;
+  float scale;
+  vec3 color;
+  int drawLayer;
+} TextRender;
+
+typedef struct
+{
   float health;
   float speed;
 } Stats;
 
 typedef struct
 {
-  const char *shape;
+  float width, height;
+  float offsetX, offsetY;
 } Collider;
+
+extern ecs_entity_t PlayerTag;
+extern ecs_entity_t EnemyTag;
+extern ecs_entity_t ProjectileTag;
+extern ecs_entity_t ItemTag;
 
 extern ECS_COMPONENT_DECLARE(Transform);
 extern ECS_COMPONENT_DECLARE(SpriteRender);
 extern ECS_COMPONENT_DECLARE(TilemapRender);
+extern ECS_COMPONENT_DECLARE(TextRender);
 extern ECS_COMPONENT_DECLARE(Stats);
 extern ECS_COMPONENT_DECLARE(Collider);
 

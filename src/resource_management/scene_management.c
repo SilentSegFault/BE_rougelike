@@ -14,10 +14,22 @@ void SetScenesDirPath(const char *path)
 SceneEntity LoadSceneEntity(cJSON *entity)
 {
   SceneEntity loadedEntity = {0};
+  cJSON *name = cJSON_GetObjectItemCaseSensitive(entity, "name");
   cJSON *type = cJSON_GetObjectItemCaseSensitive(entity, "type");
   cJSON *position = cJSON_GetObjectItemCaseSensitive(entity, "position");
   cJSON *rotation = cJSON_GetObjectItemCaseSensitive(entity, "rotation");
+  cJSON *parent = cJSON_GetObjectItemCaseSensitive(entity, "parent");
 
+  if(cJSON_IsString(name))
+  {
+    char *nameBuf = malloc(sizeof(char) * strlen(name->valuestring));
+    strcpy(nameBuf, name->valuestring);
+    loadedEntity.name = nameBuf;
+  }
+  else
+  {
+    loadedEntity.name = NULL;
+  }
 
   if(cJSON_IsString(type))
   {
@@ -71,6 +83,17 @@ SceneEntity LoadSceneEntity(cJSON *entity)
     LogTagWarning("SceneLoading", "Entity position should be an object!");
     loadedEntity.position[0] = 0;
     loadedEntity.position[1] = 0;
+  }
+
+  if(cJSON_IsString(parent))
+  {
+    char *parentBuf = malloc(sizeof(char) * strlen(parent->valuestring));
+    strcpy(parentBuf, parent->valuestring);
+    loadedEntity.parent = parentBuf;
+  }
+  else
+  {
+    loadedEntity.parent = NULL;
   }
 
   return loadedEntity;

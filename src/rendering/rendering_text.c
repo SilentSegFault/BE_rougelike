@@ -19,11 +19,11 @@ void InitTextRenderer()
   glBindVertexArray(0);
 }
 
-void RenderText(Shader *shader, mat4 projection, Font *font, char *text, vec2 position, float scale, vec3 color)
+void RenderText(Shader *shader, mat4 *projection, Font *font, char *text, vec2 position, float scale, vec3 color)
 {
   // activate corresponding render state	
   ShaderSetVector3(*shader, "textColor", color, TRUE);
-  ShaderSetMat4(*shader, "projection", projection, FALSE);
+  ShaderSetMat4(*shader, "projection", *projection, FALSE);
   glActiveTexture(GL_TEXTURE0);
   glBindVertexArray(textVAO);
 
@@ -34,7 +34,7 @@ void RenderText(Shader *shader, mat4 projection, Font *font, char *text, vec2 po
     Character ch = font->characters[c];
 
     float xpos = position[0] + ch.bearing[0] * scale;
-    float ypos = position[1] - ch.bearing[1] * scale;// + (ch.size[1] - ch.bearing[1]) * scale;
+    float ypos = position[1] - ch.bearing[1] * scale;
 
     float w = ch.size[0] * scale;
     float h = ch.size[1] * scale;

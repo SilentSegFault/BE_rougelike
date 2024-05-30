@@ -22,5 +22,11 @@
     "shader" : "sprite",
     "texture" : "bullet",
     "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "gun",
+    "shader" : "sprite",
+    "texture" : "gun",
+    "colorMask" : [1.0, 1.0, 1.0]
   }
 ]}

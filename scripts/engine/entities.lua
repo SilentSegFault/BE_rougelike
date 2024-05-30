@@ -1,24 +1,6 @@
 Entity = {
 	id = -1,
-
 	tags = {},
-
-	size = {
-		width = 20,
-		height = 20,
-	},
-
-	render = {
-		sprite = "default",
-		drawLayer = 0,
-	},
-
-	stats = {
-		health = 0,
-		speed = 0,
-	},
-
-	collisionShape = "circle",
 }
 
 function Entity:New(o)

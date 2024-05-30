@@ -4,29 +4,48 @@
 #include "../logger/logger.h"
 #include "../resource_management/assets_library.h"
 
-ecs_entity_t CreateEntity(ecs_world_t *world, const char *entity, vec2 position, float rotation)
+ecs_entity_t CreateEntity(ecs_world_t *world, const char *entity, const char *name, vec2 position, float rotation, const char *parent)
 {
   ecs_entity_t ent = ecs_new_id(world);
-  LuaEntity luaEnt;
+  if(name != NULL)
+  {
+    ecs_set_name(world, ent, name);
+  }
 
   if(!EntityExists(entity))
   {
     LogWarning("entity `%s` doesn't exists!", entity);
-    luaEnt = CreateLuaEntity("Entity", ent);
+    CreateLuaEntity(world, "Entity", ent);
   }
   else
   {
-    luaEnt = CreateLuaEntity(entity, ent);
+    CreateLuaEntity(world, entity, ent);
   }
 
-  ecs_set(world, ent, Transform, {.rotation = rotation,
-                                  .position = {position[0], position[1]},
-                                  .size = {luaEnt.size.width, luaEnt.size.height}});
-  ecs_set(world, ent, SpriteRender, {.drawLayer = luaEnt.render.drawLayer,
-                                     .sprite = GetSprite(luaEnt.render.sprite),
-                                     .visible = TRUE,
-                                     .flipX = FALSE,
-                                     .flipY = FALSE});
+  Transform *transform = NULL;
+  if(!ecs_has_id(world, ent, ecs_id(Transform)))
+  {
+    ecs_add_id(world, ent, ecs_id(Transform));
+  }
+
+  transform = ecs_get_mut_id(world, ent, ecs_id(Transform));
+
+  transform->position[0] = position[0];
+  transform->position[1] = position[1];
+  transform->rotation = rotation;
+
+  if(parent != NULL)
+  {
+    ecs_id_t parentId = ecs_lookup(world, parent);
+    if(parentId == 0)
+    {
+      LogWarning("Entity with name `%s` doesn't exists", parent);
+    }
+    else
+    {
+      transform->parent = parentId;
+    }
+  }
 
   CallOnCreate(ent);
 

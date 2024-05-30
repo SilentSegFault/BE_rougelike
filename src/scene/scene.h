@@ -8,8 +8,10 @@
 typedef struct
 {
   const char *type;
+  const char *name;
   vec2 position;
   float rotation;
+  const char *parent;
 } SceneEntity;
 
 typedef struct

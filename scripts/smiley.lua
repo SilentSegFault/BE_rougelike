@@ -1,4 +1,4 @@
 Smiley = Entity:New({
-	size = { width = 30, height = 30 },
-	render = { sprite = "smiley", drawLayer = 0 },
+	transform = { size = { width = 30, height = 30 } },
+	spriteRender = { sprite = "smiley", drawLayer = 0 },
 })

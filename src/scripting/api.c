@@ -216,7 +216,32 @@ int api_SpawnEntity(lua_State *L)
     return 0;
   }
 
-  int e = CreateEntity(GetCurrentScene()->world, entity, (vec2) {x, y}, rotation);
+  int e = CreateEntity(GetCurrentScene()->world, entity, NULL, (vec2) {x, y}, rotation, NULL);
+  lua_pushnumber(L, e);
+  return 1;
+}
+
+int api_SpawnNamedEntity(lua_State *L)
+{
+  const char *entity = luaL_checkstring(L, 1);
+  const char *name = luaL_checkstring(L, 2);
+  float x = luaL_checknumber(L, 3);
+  float y = luaL_checknumber(L, 4);
+  float rotation = luaL_checknumber(L, 5);
+
+  if(entity == NULL)
+  {
+    LogTagWarning("LuaApi", "Invalid argument type in `SpawnNamedEntity`");
+    return 0;
+  }
+
+  if(name == NULL)
+  {
+    LogTagWarning("LuaApi", "Invalid argument type in `SpawnNamedEntity`");
+    return 0;
+  }
+
+  int e = CreateEntity(GetCurrentScene()->world, entity, name, (vec2) {x, y}, rotation, NULL);
   lua_pushnumber(L, e);
   return 1;
 }
@@ -279,7 +304,41 @@ int api_GetEntityRotation(lua_State *L)
   lua_pushnumber(L, transform->rotation);
 
   return 1;
+}
 
+int api_GetEntityByName(lua_State *L)
+{
+  const char *name = luaL_checkstring(L, 1);
+
+  if(name == NULL)
+  {
+    LogTagWarning("LuaApi", "Invalid argument in `GetEntityByName`");
+    return 0;
+  }
+
+  int id = ecs_lookup(GetCurrentScene()->world, name);
+  if(id == 0)
+  {
+    LogTagWarning("LuaApi", "Trying to get entity with name `%s` but it doesn't exists", name);
+    return 0;
+  }
+
+  lua_pushnumber(L, id);
+  return 1;
+}
+
+int api_SetEntityParent(lua_State *L)
+{
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  int parentId = luaL_checknumber(L, 2);
+  
+  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
+  transform->parent = parentId;
+
+  return 0;
 }
 
 void RegisterApiFunctions(lua_State *L)
@@ -311,4 +370,7 @@ void RegisterApiFunctions(lua_State *L)
 
   //Management
   RegisterFunction(L, "SpawnEntity", api_SpawnEntity);
+  RegisterFunction(L, "SpawnNamedEntity", api_SpawnNamedEntity);
+  RegisterFunction(L, "GetEntityByName", api_GetEntityByName);
+  RegisterFunction(L, "SetEntityParent", api_SetEntityParent);
 }

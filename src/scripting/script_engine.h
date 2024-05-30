@@ -2,22 +2,14 @@
 #define SCRIPTING_ENGINE_H
 
 #include <windows.h>
-
-typedef struct
-{
-  int id;
-  struct {float width; float height;} size;
-  struct {const char *sprite; int drawLayer;} render;
-  struct {float health; float speed;} stats;
-  const char *collisionShape;
-} LuaEntity;
+#include "flecs/flecs.h"
 
 void InitScriptingEngine();
 int RunScript(const char *scriptPath);
 void RunScriptsFromDirectory(const char *scriptsDirPath);
 
 BOOL EntityExists(const char *entity);
-LuaEntity CreateLuaEntity(const char *entity, int id);
+void CreateLuaEntity(ecs_world_t *world, const char *entity, ecs_entity_t id);
 void CallOnCreate(int id);
 void CallOnUpdate(int id, float deltaTime);
 void CallOnDestroy(int id);

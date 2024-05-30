@@ -37,7 +37,12 @@ void InitScene(Scene *scene)
 
   for(int i = 0; i < scene->numOfEntitiesToLoad; i++)
   {
-    CreateEntity(scene->world, scene->entitiesToLoad[i].type, scene->entitiesToLoad[i].position, scene->entitiesToLoad[i].rotation);
+    CreateEntity(scene->world,
+                 scene->entitiesToLoad[i].type,
+                 scene->entitiesToLoad[i].name,
+                 scene->entitiesToLoad[i].position,
+                 scene->entitiesToLoad[i].rotation,
+                 scene->entitiesToLoad[i].parent);
   }
   scene->isInitialized = TRUE;
 }

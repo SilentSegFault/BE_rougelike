@@ -10,7 +10,8 @@
 #include <stdlib.h>
 #include "../resource_management/assets_library.h"
 #include "../logger/logger.h"
-#include "../rendering/rendering_tilemaps.h"
+#include "../rendering/rendering_text.h"
+#include "../rendering/rendering_sprites.h"
 
 Game currentGame = {0};
 ecs_world_t *world;
@@ -34,8 +35,9 @@ void Update(double deltaTime)
 void Render(void)
 {
   UpdateProjectionMatrix();
-  DrawTilemap(GetTilemap("default"), GetShader("tilemap"), GetProjectionMatrix(), (vec2) {0, 0}, (vec2) {1000, 800}, 0);
+  ecs_run(GetCurrentScene()->world, ecs_id(TilemapRenderSystem), 0, NULL);
   ecs_run(GetCurrentScene()->world, ecs_id(SpriteRenderSystem), 0, NULL);
+  ecs_run(GetCurrentScene()->world, ecs_id(TextRenderSystem), 0, NULL);
 }
 
 void DisposeGame(void)
