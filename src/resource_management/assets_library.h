@@ -8,6 +8,8 @@
 #include "../tilemap/tilemap.h"
 #include "../character/character.h"
 #include "../scene/scene.h"
+#include "../spritesheet/spritesheet.h"
+#include "../animation/animation.h"
 
 void InitAssetsLibrary(void);
 
@@ -18,6 +20,8 @@ void SaveTileset(Tileset tileset, const char *name);
 void SaveTilemap(Tilemap map, const char *name);
 void SaveFont(Font font, const char *name);
 void SaveScene(Scene scene, const char *name);
+void SaveSpritesheet(Spritesheet spritesheet, const char *name);
+void SaveAnimation(Animation animation, const char *name);
 
 Shader* GetShader(const char *name);
 Texture2D* GetTexture2D(const char *name);
@@ -26,6 +30,8 @@ Tileset* GetTileset(const char *name);
 Tilemap* GetTilemap(const char *name);
 Font* GetFont(const char *name);
 Scene* GetScene(const char *name);
+Spritesheet* GetSpritesheet(const char *name);
+Animation* GetAnimation(const char *name);
 
 void DisposeAssets();
 

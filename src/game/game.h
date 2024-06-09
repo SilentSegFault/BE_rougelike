@@ -18,7 +18,7 @@ void Update(double deltaTime);
 void Render(void);
 void DisposeGame(void);
 
-void LoadScene(Scene *scene);
+void LoadScene(const char *sceneName);
 Scene* GetCurrentScene();
 void UnloadScene();
 

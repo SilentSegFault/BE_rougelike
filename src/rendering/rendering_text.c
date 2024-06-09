@@ -19,13 +19,16 @@ void InitTextRenderer()
   glBindVertexArray(0);
 }
 
-void RenderText(Shader *shader, mat4 *projection, Font *font, char *text, vec2 position, float scale, vec3 color)
+void RenderText(Shader *shader, mat4 *projection, int layer, Font *font, const char *text, vec2 txtPosition, float scale, vec3 color)
 {
   // activate corresponding render state	
   ShaderSetVector3(*shader, "textColor", color, TRUE);
   ShaderSetMat4(*shader, "projection", *projection, FALSE);
+  ShaderSetInteger(*shader, "layer", layer, FALSE);
   glActiveTexture(GL_TEXTURE0);
   glBindVertexArray(textVAO);
+
+  vec2 position = {txtPosition[0], txtPosition[1]};
 
   // iterate through all characters
   unsigned char c;

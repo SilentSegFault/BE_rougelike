@@ -7,6 +7,7 @@ typedef struct
 {
   Texture2D tilesetTexture;
   int layerVAO;
+  int drawLayer;
 } TilemapLayer;
 
 typedef struct
@@ -18,7 +19,7 @@ typedef struct
 } Tilemap;
 
 Tilemap CreateTilemap(int width, int height);
-TilemapLayer CreateTilemapLayer(Tileset tileset, int width, int height, int *tileData);
+TilemapLayer CreateTilemapLayer(Tileset tileset, int drawLayer, int width, int height, int *tileData);
 int AddLayerToTilemap(Tilemap *map, TilemapLayer layer);
 void DisposeTilemap(Tilemap *map);
 

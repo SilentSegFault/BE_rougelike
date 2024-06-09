@@ -10,6 +10,7 @@
 #include "cglm/cglm.h"
 #include <string.h>
 #include "../utility/ut_math.h"
+#include "../ecs/components_util.h"
 
 void RegisterFunction(lua_State *L, const char *name, lua_CFunction func)
 {
@@ -79,9 +80,8 @@ int api_MoveEntity(lua_State *L)
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
-  transform->position[0] += dx;
-  transform->position[1] += dy;
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
+  Translate(GetCurrentScene()->world, transform, dx, dy);
 
   return 0;
 }
@@ -94,9 +94,53 @@ int api_SetEntityPos(lua_State *L)
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
-  transform->position[0] = x;
-  transform->position[1] = y;
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
+  TranslateTo(GetCurrentScene()->world, transform, x, y);
+
+  return 0;
+}
+
+int api_RotateEntity(lua_State *L)
+{
+  float angle = luaL_checknumber(L, 2);
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
+  Rotate(GetCurrentScene()->world, transform, angle);
+
+  return 0;
+}
+
+int api_EntityLookAt(lua_State *L)
+{
+  float x = luaL_checknumber(L, 2);
+  float y = luaL_checknumber(L, 3);
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
+  vec2 dir;
+  glm_vec2_sub((vec2) {x, y}, transform->position, dir);
+
+  float rotation = GetAngleBetweenVectors((vec2) {1,0}, dir);
+  float angle = rotation - transform->rotation;
+  Rotate(GetCurrentScene()->world, transform, angle);
+
+  return 0;
+}
+
+int api_ScaleEntity(lua_State *L)
+{
+  float scale = luaL_checknumber(L, 2);
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
+  Scale(GetCurrentScene()->world, transform, scale);
 
   return 0;
 }
@@ -107,10 +151,9 @@ int api_FlipLeft(lua_State *L)
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  SpriteRender *spriteRender = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(SpriteRender));
+  SpriteRender *spriteRender = EcsGetComponent(GetCurrentScene()->world, id, SpriteRenderComp);
 
-  if(!spriteRender->flipX)
-    spriteRender->flipX = TRUE;
+  spriteRender->flipX = TRUE;
 
   return 0;
 }
@@ -121,10 +164,35 @@ int api_FlipRight(lua_State *L)
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  SpriteRender *spriteRender = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(SpriteRender));
+  SpriteRender *spriteRender = EcsGetComponent(GetCurrentScene()->world, id, SpriteRenderComp);
 
-  if(spriteRender->flipX)
-    spriteRender->flipX = FALSE;
+  spriteRender->flipX = FALSE;
+
+  return 0;
+}
+
+int api_FlipDown(lua_State *L)
+{
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  SpriteRender *spriteRender = EcsGetComponent(GetCurrentScene()->world, id, SpriteRenderComp);
+
+  spriteRender->flipY = TRUE;
+
+  return 0;
+}
+
+int api_FlipUp(lua_State *L)
+{
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  SpriteRender *spriteRender = EcsGetComponent(GetCurrentScene()->world, id, SpriteRenderComp);
+
+  spriteRender->flipY = FALSE;
 
   return 0;
 }
@@ -216,50 +284,18 @@ int api_SpawnEntity(lua_State *L)
     return 0;
   }
 
-  int e = CreateEntity(GetCurrentScene()->world, entity, NULL, (vec2) {x, y}, rotation, NULL);
+  EcsID e = CreateEntity(GetCurrentScene()->world, entity, (vec2) {x, y}, rotation, NULL);
   lua_pushnumber(L, e);
   return 1;
 }
 
-int api_SpawnNamedEntity(lua_State *L)
+int api_DestroyEntity(lua_State *L)
 {
-  const char *entity = luaL_checkstring(L, 1);
-  const char *name = luaL_checkstring(L, 2);
-  float x = luaL_checknumber(L, 3);
-  float y = luaL_checknumber(L, 4);
-  float rotation = luaL_checknumber(L, 5);
-
-  if(entity == NULL)
-  {
-    LogTagWarning("LuaApi", "Invalid argument type in `SpawnNamedEntity`");
-    return 0;
-  }
-
-  if(name == NULL)
-  {
-    LogTagWarning("LuaApi", "Invalid argument type in `SpawnNamedEntity`");
-    return 0;
-  }
-
-  int e = CreateEntity(GetCurrentScene()->world, entity, name, (vec2) {x, y}, rotation, NULL);
-  lua_pushnumber(L, e);
-  return 1;
-}
-
-int api_EntityLookAt(lua_State *L)
-{
-  float x = luaL_checknumber(L, 2);
-  float y = luaL_checknumber(L, 3);
   lua_getfield(L, 1, "id");
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
-  vec2 dir;
-  glm_vec2_sub((vec2) {x, y}, transform->position, dir);
-
-  float rotation = GetAngleBetweenVectors((vec2) {1,0}, dir);
-  transform->rotation = rotation;
+  EcsAddComponent(GetCurrentScene()->world, id, DestroyTag);
 
   return 0;
 }
@@ -270,7 +306,7 @@ int api_GetEntityPos(lua_State *L)
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
   lua_pushnumber(L, transform->position[0]);
   lua_pushnumber(L, transform->position[1]);
 
@@ -300,30 +336,9 @@ int api_GetEntityRotation(lua_State *L)
   int id = luaL_checknumber(L, -1);
   lua_pop(L, 1);
 
-  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
   lua_pushnumber(L, transform->rotation);
 
-  return 1;
-}
-
-int api_GetEntityByName(lua_State *L)
-{
-  const char *name = luaL_checkstring(L, 1);
-
-  if(name == NULL)
-  {
-    LogTagWarning("LuaApi", "Invalid argument in `GetEntityByName`");
-    return 0;
-  }
-
-  int id = ecs_lookup(GetCurrentScene()->world, name);
-  if(id == 0)
-  {
-    LogTagWarning("LuaApi", "Trying to get entity with name `%s` but it doesn't exists", name);
-    return 0;
-  }
-
-  lua_pushnumber(L, id);
   return 1;
 }
 
@@ -335,8 +350,21 @@ int api_SetEntityParent(lua_State *L)
 
   int parentId = luaL_checknumber(L, 2);
   
-  Transform *transform = ecs_get_mut_id(GetCurrentScene()->world, id, ecs_id(Transform));
+  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
   transform->parent = parentId;
+
+  return 0;
+}
+
+int api_PlayAnimation(lua_State *L)
+{
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  const char *animationName = luaL_checkstring(L, 2);
+  BOOL flip = luaL_checknumber(L, 3);
+  SetAnimation(GetCurrentScene()->world, id, animationName, flip);
 
   return 0;
 }
@@ -354,8 +382,12 @@ void RegisterApiFunctions(lua_State *L)
   //Transfoms
   RegisterFunction(L, "MoveEntity", api_MoveEntity);
   RegisterFunction(L, "SetEntityPos", api_SetEntityPos);
+  RegisterFunction(L, "RotateEntity", api_RotateEntity);
+  RegisterFunction(L, "ScaleEntity", api_ScaleEntity);
   RegisterFunction(L, "FlipLeft", api_FlipLeft);
   RegisterFunction(L, "FlipRight", api_FlipRight);
+  RegisterFunction(L, "FlipDown", api_FlipDown);
+  RegisterFunction(L, "FlipUp", api_FlipUp);
   RegisterFunction(L, "EntityLookAt", api_EntityLookAt);
 
   //???
@@ -370,7 +402,7 @@ void RegisterApiFunctions(lua_State *L)
 
   //Management
   RegisterFunction(L, "SpawnEntity", api_SpawnEntity);
-  RegisterFunction(L, "SpawnNamedEntity", api_SpawnNamedEntity);
-  RegisterFunction(L, "GetEntityByName", api_GetEntityByName);
   RegisterFunction(L, "SetEntityParent", api_SetEntityParent);
+  RegisterFunction(L, "DestroyEntity", api_DestroyEntity);
+  RegisterFunction(L, "PlayAnimation", api_PlayAnimation);
 }

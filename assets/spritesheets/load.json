@@ -1,0 +1,10 @@
+{"load" : [
+  {
+    "name" : "default",
+    "texture" : "default",
+    "rows" : 1,
+    "cols" : 1,
+    "frameWidth" : 200,
+    "frameHeight" : 200
+  }
+]}

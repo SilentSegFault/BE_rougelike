@@ -1,20 +1,31 @@
 #include "components.h"
+#include "ecs.h"
 
-ECS_COMPONENT_DECLARE(Transform);
-ECS_COMPONENT_DECLARE(SpriteRender);
-ECS_COMPONENT_DECLARE(TilemapRender);
-ECS_COMPONENT_DECLARE(TextRender);
-ECS_COMPONENT_DECLARE(Stats);
-ECS_COMPONENT_DECLARE(Collider);
+EcsID TransformComp;
+EcsID SpriteRenderComp;
+EcsID TilemapRenderComp;
+EcsID TextRenderComp;
+EcsID AnimatorComp;
+EcsID StatsComp;
+EcsID ColliderComp;
+EcsID GameObjectComp;
 
-void ComponentsModuleImport(ecs_world_t *world)
+EcsID NewTag;
+EcsID UpdateTag;
+EcsID DestroyTag;
+
+void RegisterComponents(EcsWorld *world)
 {
-  ECS_MODULE(world, ComponentsModule);
+  TransformComp = EcsRegisterComponent(world, sizeof(Transform));
+  SpriteRenderComp = EcsRegisterComponent(world, sizeof(SpriteRender));
+  TilemapRenderComp = EcsRegisterComponent(world, sizeof(TilemapRender));
+  TextRenderComp = EcsRegisterComponent(world, sizeof(TextRender));
+  AnimatorComp = EcsRegisterComponent(world, sizeof(Animator));
+  StatsComp = EcsRegisterComponent(world, sizeof(Stats));
+  ColliderComp = EcsRegisterComponent(world, sizeof(Collider));
+  GameObjectComp = EcsRegisterComponent(world, sizeof(GameObject));
 
-  ECS_COMPONENT_DEFINE(world, Transform);
-  ECS_COMPONENT_DEFINE(world, SpriteRender);
-  ECS_COMPONENT_DEFINE(world, TilemapRender);
-  ECS_COMPONENT_DEFINE(world, TextRender);
-  ECS_COMPONENT_DEFINE(world, Stats);
-  ECS_COMPONENT_DEFINE(world, Collider);
+  NewTag = EcsRegisterComponent(world, 1);
+  UpdateTag = EcsRegisterComponent(world, 1);
+  DestroyTag = EcsRegisterComponent(world, 1);
 }

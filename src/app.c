@@ -11,6 +11,7 @@
 
 #include "rendering/rendering_text.h"
 #include "rendering/rendering_sprites.h"
+#include "rendering/rendering_debug.h"
 
 #include "resource_management/assets_loader.h"
 #include "resource_management/assets_library.h"
@@ -53,7 +54,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
   LogTagInfo("Initialization", "App starting.");
 
   //Init game window module
-  InitGameWindow("Main Window", 640, 480, FALSE);
+  InitGameWindow("Main Window", 640, 360, FALSE);
   LoadOpenGLFunctions();
   SetWindowSizingCallback(ViewportSizingUpdate);
   LogTagInfo("Initialization", "Window Created.");
@@ -64,6 +65,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
   //Init renderers modules
   InitTextRenderer();
   InitSpriteRenderer();
+  InitDebugRenderer();
 
   //Init resource management modules
   InitAssetsLoader("../../assets");
@@ -72,8 +74,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
   //Init ecs modules
   //Init Scripting api
   InitScriptingEngine();
-  RunScriptsFromDirectory("../../scripts/engine");
-  RunScriptsFromDirectory("../../scripts");
+  int ok = RunScript("../../scripts/loader.lua");
+  if(!ok)
+  {
+    LogDebug("Script doesnt run properly");
+  }
 
   LogTagInfo("Initialization", "Required modules loaded.");
 
@@ -105,7 +110,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pCmdLine, 
     Update(deltaTime);
 
     glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     Render();
     SwapGameWindowBuffers();
@@ -143,6 +148,7 @@ void ExitHandler(void)
   DisposeAssets();
   DisposeTextRenderer();
   DisposeSpriteRenderer();
+  DisposeDebugRenderer();
   DisposeScriptingEngine();
   LogTagInfo("Quiting", "Closing app");
   DisposeLogger();

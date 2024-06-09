@@ -1,9 +1,3 @@
 {"load" : [
-  {"name" : "smiley", "source" : "smiley-face-icon.png", "alpha" : true},
-  {"name" : "soldier", "source" : "soldier.png", "alpha" : true},
-  {"name" : "bullet", "source" : "bullet.png", "alpha" : true},
-  {"name" : "default", "source" : "200px-Debugempty.png", "alpha" : true},
-  {"name" : "testTileset", "source" : "tilemap.png", "alpha" : true},
-  {"name" : "human", "source" : "human.png", "alpha" : true},
-  {"name" : "gun", "source" : "gun.png", "alpha" : true}
+  {"name" : "default", "source" : "200px-Debugempty.png", "alpha" : true}
 ]}

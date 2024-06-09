@@ -4,6 +4,7 @@
 #include "../logger/logger.h"
 #include "../ecs/systems.h"
 #include "../ecs/components.h"
+#include "../utility/ut_math.h"
 
 Scene CreateScene()
 {
@@ -30,18 +31,19 @@ void AddEntityToScene(Scene *scene, SceneEntity entitiy)
 
 void InitScene(Scene *scene)
 {
-  scene->world = ecs_init();
+  if(scene->isInitialized)
+    return;
 
-  ECS_IMPORT(scene->world, ComponentsModule);
-  ECS_IMPORT(scene->world, SystemsModule);
+  scene->world = EcsCreateWorld();
+  RegisterComponents(scene->world);
+  RegisterSystems(scene->world);
 
   for(int i = 0; i < scene->numOfEntitiesToLoad; i++)
   {
     CreateEntity(scene->world,
                  scene->entitiesToLoad[i].type,
-                 scene->entitiesToLoad[i].name,
                  scene->entitiesToLoad[i].position,
-                 scene->entitiesToLoad[i].rotation,
+                 Deg2Rad(scene->entitiesToLoad[i].rotation),
                  scene->entitiesToLoad[i].parent);
   }
   scene->isInitialized = TRUE;
@@ -49,7 +51,7 @@ void InitScene(Scene *scene)
 
 void DisposeScene(Scene *scene)
 {
-  ecs_fini(scene->world);
+  EcsFreeWorld(scene->world);
   free(scene->entitiesToLoad);
   scene->entitiesToLoad = NULL;
   scene->numOfEntitiesToLoad = 0;

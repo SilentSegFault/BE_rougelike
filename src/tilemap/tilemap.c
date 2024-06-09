@@ -16,11 +16,12 @@ Tilemap CreateTilemap(int width, int height)
   return map;
 }
 
-TilemapLayer CreateTilemapLayer(Tileset tileset, int width, int height, int *tileData)
+TilemapLayer CreateTilemapLayer(Tileset tileset, int drawLayer, int width, int height, int *tileData)
 {
   TilemapLayer layer;
 
   layer.tilesetTexture = tileset.texture;
+  layer.drawLayer = drawLayer;
 
   unsigned int layerVBO;
   glGenBuffers(1, &layerVBO);

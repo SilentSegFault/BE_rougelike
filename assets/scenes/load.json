@@ -1,7 +1,5 @@
 {"load" : [
   {"name" : "testScene", "entities" : [
-    {"name": "player", "type" : "Human", "position" : {"x" : 100, "y" : 100}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
-    {"name": "holder", "type" : "Entity", "position" : {"x" : 50, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : "player"},
-    {"name": "gun", "type" : "Gun", "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : "holder"}
+    {"name": "player", "type" : "Player", "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
   ]}
 ]}

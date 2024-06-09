@@ -2,18 +2,22 @@
 #define SCRIPTING_ENGINE_H
 
 #include <windows.h>
-#include "flecs/flecs.h"
+#include "../ecs/ecs.h"
 
 void InitScriptingEngine();
 int RunScript(const char *scriptPath);
-void RunScriptsFromDirectory(const char *scriptsDirPath);
 
 BOOL EntityExists(const char *entity);
-void CreateLuaEntity(ecs_world_t *world, const char *entity, ecs_entity_t id);
+void GetLuaEntity(int id);
+void CreateLuaEntity(EcsWorld *world, const char *entity, int id);
+void CallOnStart(int id);
 void CallOnCreate(int id);
 void CallOnUpdate(int id, float deltaTime);
+void CallOnCollision(int id1, int id2);
 void CallOnDestroy(int id);
-void UpdateEntities(float deltaTime);
+void CallAddEntity(int id);
+void CallRemoveEntity(int id);
+void LoadLuaScene(const char *name);
 
 void DisposeScriptingEngine();
 

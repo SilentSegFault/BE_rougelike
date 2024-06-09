@@ -8,6 +8,7 @@ uniform mat4 model;
 uniform mat4 projection;
 uniform int flipX;
 uniform int flipY;
+uniform int layer;
 
 void main()
 {
@@ -19,5 +20,5 @@ void main()
   if(flipY == 1)
     TexCoords.y = 1 - TexCoords.y;
 
-  gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+  gl_Position = projection * model * vec4(vertex.xy, layer/100.0, 1.0);
 }

@@ -11,6 +11,8 @@ static struct {char *key; Tileset *value;} *tilesets = NULL;
 static struct {char *key; Tilemap *value;} *tilemaps = NULL;
 static struct {char *key; Font *value;} *fonts = NULL;
 static struct {char *key; Scene *value;} *scenes = NULL;
+static struct {char *key; Spritesheet *value;} *spritesheets = NULL;
+static struct {char *key; Animation *value;} *animations = NULL;
 
 void InitAssetsLibrary(void)
 {
@@ -21,6 +23,8 @@ void InitAssetsLibrary(void)
   sh_new_arena(tilemaps);
   sh_new_arena(fonts);
   sh_new_arena(scenes);
+  sh_new_arena(spritesheets);
+  sh_new_arena(animations);
 }
 
 void SaveShader(Shader shader, const char *name)
@@ -167,6 +171,46 @@ void SaveScene(Scene scene, const char *name)
   shput(scenes, name, scenePtr);
 }
 
+void SaveSpritesheet(Spritesheet spritesheet, const char *name)
+{
+  int i = shgeti(spritesheets, name);
+  if(i >= 0)
+  {
+    LogTagWarning("AssetsLibrary", "Couldn't save duplicate. Spritesheet with name `%s` already exists.", name);
+    return;
+  }
+
+  Spritesheet *spritesheetPtr = malloc(sizeof(Spritesheet));
+  if(spritesheetPtr == NULL)
+  {
+    LogTagWarning("AssetsLibrary", "Couldn't allocate memory for `%s` spritesheet", name);
+    return;
+  }
+
+  *spritesheetPtr = spritesheet;
+  shput(spritesheets, name, spritesheetPtr);
+}
+
+void SaveAnimation(Animation animation, const char *name)
+{
+  int i = shgeti(animations, name);
+  if(i >= 0)
+  {
+    LogTagWarning("AssetsLibrary", "Couldn't save duplicate. Animation with name `%s` already exists.", name);
+    return;
+  }
+
+  Animation *animationPtr = malloc(sizeof(Animation));
+  if(animationPtr == NULL)
+  {
+    LogTagWarning("AssetsLibrary", "Couldn't allocate memory for `%s` animation", name);
+    return;
+  }
+
+  *animationPtr = animation;
+  shput(animations, name, animationPtr);
+}
+
 Shader* GetShader(const char *name)
 {
   int i = shgeti(shaders, name);
@@ -256,6 +300,32 @@ Scene* GetScene(const char *name)
   }
 
   return scenes[i].value;
+}
+
+Spritesheet* GetSpritesheet(const char *name)
+{
+  int i = shgeti(spritesheets, name);
+
+  if(i < 0)
+  {
+    LogTagWarning("AssetsLibrary", "Trying to get spritesheet with name `%s` but it doesn't exists.", name);
+    return shget(spritesheets, "default");
+  }
+
+  return spritesheets[i].value;
+}
+
+Animation* GetAnimation(const char *name)
+{
+  int i = shgeti(animations, name);
+
+  if(i < 0)
+  {
+    LogTagWarning("AssetsLibrary", "Trying to get animation with name `%s` but it doesn't exists.", name);
+    return shget(animations, "default");
+  }
+
+  return animations[i].value;
 }
 
 void DisposeTilemaps()

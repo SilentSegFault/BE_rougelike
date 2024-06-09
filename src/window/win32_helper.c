@@ -52,6 +52,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lPar
 
     case WM_SIZE:
     case WM_SIZING:
+    case WM_ENTERSIZEMOVE:
     case WM_MOVE:
     case WM_MOVING:
       {
@@ -94,14 +95,15 @@ HWND CreateMainWindow(const char *title, int width, int height)
     FATAL_ERROR();
   }
 
+  DWORD dwStyle = WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME;
   RECT rc;
   SetRect(&rc, 0, 0, width, height);
-  AdjustWindowRectEx(&rc, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_APPWINDOW);
+  AdjustWindowRectEx(&rc, dwStyle, FALSE, WS_EX_APPWINDOW);
   windowWidth  = rc.right  - rc.left;
   windowHeight = rc.bottom - rc.top;
   
 
-  HWND hwnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, title, WS_OVERLAPPEDWINDOW,
+  HWND hwnd = CreateWindowEx(WS_EX_APPWINDOW, wc.lpszClassName, title, dwStyle,
                              CW_USEDEFAULT, CW_USEDEFAULT, windowWidth, windowHeight,
                              NULL, NULL, GetModuleHandle(NULL), NULL);
 

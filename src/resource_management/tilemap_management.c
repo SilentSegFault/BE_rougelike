@@ -60,7 +60,7 @@ int CreateTilemapLayerFromJson(cJSON *tilemapLayer, int width, int height, Tilem
     index++;
   }
 
-  *createdLayer = CreateTilemapLayer(*GetTileset(tileset->valuestring), width, height, data);
+  *createdLayer = CreateTilemapLayer(*GetTileset(tileset->valuestring), layer->valueint, width, height, data);
 
   return 1;
 }

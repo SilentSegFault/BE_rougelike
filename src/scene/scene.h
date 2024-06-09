@@ -1,8 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "flecs/flecs.h"
 #include "cglm/types.h"
+#include "../ecs/ecs.h"
 #include <windows.h>
 
 typedef struct
@@ -16,7 +16,7 @@ typedef struct
 
 typedef struct
 {
-  ecs_world_t *world;
+  EcsWorld *world;
   BOOL isInitialized;
   long numOfEntitiesToLoad;
   SceneEntity *entitiesToLoad;

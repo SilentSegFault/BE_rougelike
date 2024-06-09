@@ -8,6 +8,8 @@
 #include "tileset_management.h"
 #include "tilemap_management.h"
 #include "scene_management.h"
+#include "spritesheet_management.h"
+#include "animation_management.h"
 #include "../utility/loadFileSource.h"
 #include <minwindef.h>
 #include <stdlib.h>
@@ -64,6 +66,13 @@ void InitAssetsLoader(const char *path)
   //Scenes
   sprintf_s(pathBuffer, MAX_PATH, "%s/scenes", path);
   SetPathToDir(pathBuffer, SetScenesDirPath);
+
+  //Spritesheets
+  sprintf_s(pathBuffer, MAX_PATH, "%s/spritesheets", path);
+  SetPathToDir(pathBuffer, SetSpritesheetsDirPath);
+  //Animations
+  sprintf_s(pathBuffer, MAX_PATH, "%s/animations", path);
+  SetPathToDir(pathBuffer, SetAnimationsDirPath);
 }
 
 void LoadShadersFromJson(cJSON *shadersLoadJson)
@@ -264,66 +273,82 @@ void LoadScenesFromJson(cJSON *scenesLoadJson)
   }
 }
 
+void LoadSpritesheetsFromJson(cJSON *spritesheetsLoadJson)
+{
+  cJSON *spritesheets = cJSON_GetObjectItemCaseSensitive(spritesheetsLoadJson, "load");
+  cJSON *spritesheet = NULL;
+
+  cJSON_ArrayForEach(spritesheet, spritesheets)
+  {
+    cJSON *name = cJSON_GetObjectItemCaseSensitive(spritesheet, "name");
+    if(!cJSON_IsString(name))
+    {
+      LogTagError("AssetsLoading", "Failed loading spritesheet: name should be a string!");
+    }
+
+    Spritesheet loadedSpritesheet;
+    if(LoadSpritesheetFromJson(spritesheet, &loadedSpritesheet))
+    {
+      SaveSpritesheet(loadedSpritesheet, name->valuestring);
+    }
+    else
+    {
+      LogTagError("AssetsLoading", "Failed loading spritesheet: `%s`", name->valuestring);
+    }
+  }
+}
+
+void LoadAnimationsFromJson(cJSON *animationsLoadJson)
+{
+  cJSON *animations = cJSON_GetObjectItemCaseSensitive(animationsLoadJson, "load");
+  cJSON *animation = NULL;
+
+  cJSON_ArrayForEach(animation, animations)
+  {
+    cJSON *name = cJSON_GetObjectItemCaseSensitive(animation, "name");
+    if(!cJSON_IsString(name))
+    {
+      LogTagError("AssetsLoading", "Failed loading animation: name should be a string!");
+    }
+
+    Animation loadedAnimation;
+    if(LoadAnimationFromJson(animation, &loadedAnimation))
+    {
+      SaveAnimation(loadedAnimation, name->valuestring);
+    }
+    else
+    {
+      LogTagError("AssetsLoading", "Failed loading animation: `%s`", name->valuestring);
+    }
+  }
+}
+
+void LoadAssetsFromJson(const char *pathToLoadFileDir, void(*loadFunction)(cJSON*))
+{
+  char loadFilePath[MAX_PATH];
+  char *loadFileSource = NULL;
+  cJSON *loadFileJson = NULL;
+
+  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToLoadFileDir);
+  loadFileSource = LoadFileSource(loadFilePath);
+  loadFileJson = cJSON_Parse(loadFileSource);
+  loadFunction(loadFileJson);
+  free(loadFileSource);
+  cJSON_Delete(loadFileJson);
+}
 void LoadAssets()
 {
   char loadFilePath[MAX_PATH];
   char *loadFileSource = NULL;
   cJSON *loadFileJson = NULL;
 
-  //Shaders
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToShadersDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadShadersFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
-  //Textures
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToTexturesDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadTexturesFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
-  //Sprites
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToSpritesDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadSpritesFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
-  //Tilesets
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToTilesetsDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadTilesetsFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
-  //Tilemaps
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToTilemapsDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadTilemapsFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
-  //Fonts
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToFontsDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadFontsFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
-  //Scenes
-  sprintf_s(loadFilePath, MAX_PATH, "%s/load.json", pathToScenesDir);
-  loadFileSource = LoadFileSource(loadFilePath);
-  loadFileJson = cJSON_Parse(loadFileSource);
-  LoadScenesFromJson(loadFileJson);
-  free(loadFileSource);
-  cJSON_Delete(loadFileJson);
-
+  LoadAssetsFromJson(pathToShadersDir, LoadShadersFromJson);
+  LoadAssetsFromJson(pathToTexturesDir, LoadTexturesFromJson);
+  LoadAssetsFromJson(pathToSpritesDir, LoadSpritesFromJson);
+  LoadAssetsFromJson(pathToTilesetsDir, LoadTilesetsFromJson);
+  LoadAssetsFromJson(pathToTilemapsDir, LoadTilemapsFromJson);
+  LoadAssetsFromJson(pathToFontsDir, LoadFontsFromJson);
+  LoadAssetsFromJson(pathToScenesDir, LoadScenesFromJson);
+  LoadAssetsFromJson(pathToSpritesheetsDir, LoadSpritesheetsFromJson);
+  LoadAssetsFromJson(pathToAnimationsDir, LoadAnimationsFromJson);
 }

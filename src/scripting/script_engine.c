@@ -5,9 +5,7 @@
 #include "../logger/logger.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <windows.h>
-#include <stdarg.h>
 #include "api.h"
 #include "../ecs/components.h"
 #include "../resource_management/assets_library.h"
@@ -24,91 +22,20 @@ void InitScriptingEngine()
 
 int RunScript(const char *scriptPath)
 {
-  return luaL_dofile(L, scriptPath) == LUA_OK;
-}
-
-void RunScriptsFromDirectory(const char *scriptsDirPath)
-{
-  char path[MAX_PATH];
-  sprintf_s(path, MAX_PATH, "%s/*.lua", scriptsDirPath);
-
-  WIN32_FIND_DATA data;
-  HANDLE hFind = FindFirstFile(path, &data);
-
-  if(hFind != INVALID_HANDLE_VALUE)
-  {
-
-    do
-    {
-      char scriptFilePath[MAX_PATH];
-      sprintf_s(scriptFilePath, MAX_PATH, "%s/%s", scriptsDirPath, data.cFileName);
-      if(RunScript(scriptFilePath))
-      {
-        LogTagInfo("ScriptEngine", "Succesfully ran script `%s`", data.cFileName);
-      }
-      else
-    {
-        LogTagError("ScriptEngine", "Failed running script `%s`: \"%s\"", data.cFileName, lua_tostring(L, -1));
-      }
-
-    } while(FindNextFile(hFind, &data));
-
-    FindClose(hFind);
-  }
-}
-
-void CallOnCreate(int id)
-{
-  lua_getglobal(L, "CallOnCreate");
-  lua_pushnumber(L, id);
-
-  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
-  {
-    LogTagError("ScriptEngine", "Failed running OnCreate: %s", id, lua_tostring(L, -1));
-  }
-}
-
-void CallOnUpdate(int id, float deltaTime)
-{
-  lua_getglobal(L, "CallOnUpdate");
-  lua_pushnumber(L, id);
-  lua_pushnumber(L, deltaTime);
-
-  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
-  {
-    LogTagError("ScriptEngine", "Failed running OnUpdate: %s", id, lua_tostring(L, -1));
-  }
-
-}
-
-void CallOnDestroy(int id)
-{
-  lua_getglobal(L, "CallOnDestroy");
-  lua_pushnumber(L, id);
-
-  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
-  {
-    LogTagError("ScriptEngine", "Failed running CallOnDestroy: %s", id, lua_tostring(L, -1));
-  }
-}
-
-void UpdateEntities(float deltaTime)
-{
-  lua_getglobal(L, "UpdateEntities");
-  lua_pushnumber(L, deltaTime);
-
-  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
-  {
-    LogTagError("ScriptEngine", "Failed running UpdateEntities: %s", lua_tostring(L, -1));
-  }
+  int ok = luaL_dofile(L, scriptPath) == LUA_OK;
+  if(!ok)
+    LogTagError("ScriptEngine", "Error running lua script %s: %s", scriptPath, lua_tostring(L, -1)); 
+  return ok;
 }
 
 BOOL EntityExists(const char *entity)
 {
-  lua_getglobal(L, "IsEntity");
+  lua_getglobal(L, "Ecs");
+  lua_getfield(L, -1, "IsEntity");
+  lua_insert(L, -2);
   lua_getglobal(L, entity);
 
-  if(lua_pcall(L, 1, 1, 0) != 0)
+  if(lua_pcall(L, 2, 1, 0) != 0)
   {
     LogTagError("ScriptEngine", "Error running lua function `IsEntity`: %s", lua_tostring(L, -1)); 
     return FALSE;
@@ -125,9 +52,84 @@ BOOL EntityExists(const char *entity)
   return exists;
 }
 
-void AddTransformComp(ecs_world_t *world, ecs_entity_t ent)
+void GetLuaEntity(int id)
 {
-  Transform *transform = calloc(1, sizeof(Transform));
+  lua_getglobal(L, "Ecs");
+  lua_getfield(L, -1, "GetEntity");
+  lua_insert(L, -2);
+  lua_pushnumber(L, id);
+
+  if(lua_pcall(L, 2, 1, 0) != 0)
+  {
+    LogTagError("ScriptEngine", "Error running lua function `Ecs:GetEntity`: %s", lua_tostring(L, -1)); 
+    return;
+  }
+}
+
+void CallOnCreate(int id)
+{
+  GetLuaEntity(id);
+  lua_getfield(L, -1, "OnCreate");
+  lua_insert(L, -2);
+
+  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running OnCreate: %s", lua_tostring(L, -1));
+  }
+}
+
+void CallOnStart(int id)
+{
+  GetLuaEntity(id);
+  lua_getfield(L, -1, "OnStart");
+  lua_insert(L, -2);
+
+  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running OnStart: %s", lua_tostring(L, -1));
+  }
+}
+
+void CallOnUpdate(int id, float deltaTime)
+{
+  GetLuaEntity(id);
+  lua_getfield(L, -1, "OnUpdate");
+  lua_insert(L, -2);
+  lua_pushnumber(L, deltaTime);
+
+  if(lua_pcall(L, 2, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running OnUpdate: %s", lua_tostring(L, -1));
+  }
+}
+
+void CallOnCollision(int id1, int id2)
+{
+  GetLuaEntity(id1);
+  lua_getfield(L, -1, "OnCollision");
+  lua_insert(L, -2);
+  GetLuaEntity(id2);
+
+  if(lua_pcall(L, 2, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running OnCollision: %s", lua_tostring(L, -1));
+  }
+}
+void CallOnDestroy(int id)
+{
+  GetLuaEntity(id);
+  lua_getfield(L, -1, "OnDestroy");
+  lua_insert(L, -2);
+
+  if(lua_pcall(L, 1, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running CallOnDestroy: %s", lua_tostring(L, -1));
+  }
+}
+
+void AddTransformComp(EcsWorld *world, EcsID ent)
+{
+  Transform *transform = EcsAddComponent(world, ent, TransformComp);
   lua_getfield(L, -1, "size");
 
   if(lua_istable(L, -1))
@@ -164,12 +166,11 @@ void AddTransformComp(ecs_world_t *world, ecs_entity_t ent)
     lua_pop(L, 1);
   }
 
-  ecs_set_id(world, ent, ecs_id(Transform), sizeof(Transform), transform);
 }
 
-void AddSpriteRenderComp(ecs_world_t *world, ecs_entity_t ent)
+void AddSpriteRenderComp(EcsWorld *world, EcsID ent)
 {
-  SpriteRender *spriteRender = calloc(1, sizeof(SpriteRender));
+  SpriteRender *spriteRender = EcsAddComponent(world, ent, SpriteRenderComp);
   lua_getfield(L, -1, "sprite");
   if(lua_isstring(L, -1))
   {
@@ -195,25 +196,181 @@ void AddSpriteRenderComp(ecs_world_t *world, ecs_entity_t ent)
   lua_pop(L, 1);
 
   spriteRender->visible = TRUE;
-
-  ecs_set_id(world, ent, ecs_id(SpriteRender), sizeof(SpriteRender), spriteRender);
 }
 
-void AddTilemapRenderComp(ecs_world_t *world, ecs_entity_t ent)
+void AddTilemapRenderComp(EcsWorld *world, EcsID ent)
 {
+  TilemapRender *tilemapRender = EcsAddComponent(world, ent, TilemapRenderComp);
+
+  lua_getfield(L, -1, "tilemap");
+  if(lua_isstring(L, -1))
+  {
+    tilemapRender->tilemap = GetTilemap(lua_tostring(L, -1));
+  }
+  else
+  {
+    tilemapRender->tilemap = GetTilemap("default");
+    LogTagWarning("EntityCreation", "tilemapRender.tilemap is nil.");
+  }
+  lua_pop(L, 1);
 }
 
-void AddTextRenderComp(ecs_world_t *world, ecs_entity_t ent)
+void AddTextRenderComp(EcsWorld *world, EcsID ent)
 {
+  TextRender *textRender = EcsAddComponent(world, ent, TextRenderComp);
+
+  lua_getfield(L, -1, "text");
+  if(lua_isstring(L, -1))
+  {
+    textRender->text = lua_tostring(L, -1);
+  }
+  else
+  {
+    textRender->text = NULL;
+    LogTagWarning("EntityCreation", "textRender.text is nil.");
+  }
+  lua_pop(L, 1);
+
+  lua_getfield(L, -1, "font");
+  if(lua_isstring(L, -1))
+  {
+    textRender->font = lua_tostring(L, -1);
+  }
+  else
+  {
+    textRender->font = "arial";
+    LogTagWarning("EntityCreation", "textRender.font is nil.");
+  }
+  lua_pop(L, 1);
+
+  lua_getfield(L, -1, "scale");
+  if(lua_isnumber(L, -1))
+  {
+    textRender->scale = lua_tonumber(L, -1);
+  }
+  else
+  {
+    textRender->scale = 1;
+    LogTagWarning("EntityCreation", "textRender.scale is nil.");
+  }
+  lua_pop(L, 1);
+
+  lua_getfield(L, -1, "color");
+  if(lua_istable(L, -1))
+  {
+    lua_getfield(L, -1, "r");
+    lua_getfield(L, -2, "g");
+    lua_getfield(L, -3, "b");
+
+    if(lua_isnumber(L, -3))
+    {
+      textRender->color[0] = lua_tonumber(L, -3) / 255.0f;
+    }
+    else
+    {
+      textRender->color[0] = 1.0;
+    LogTagWarning("EntityCreation", "textRender.color.r is nil.");
+    }
+
+    if(lua_isnumber(L, -2))
+    {
+      textRender->color[1] = lua_tonumber(L, -2) / 255.0f;
+    }
+    else
+    {
+      textRender->color[1] = 1.0;
+    LogTagWarning("EntityCreation", "textRender.color.g is nil.");
+    }
+
+    if(lua_isnumber(L, -1))
+    {
+      textRender->color[2] = lua_tonumber(L, -1) / 255.0f;
+    }
+    else
+    {
+      textRender->color[2] = 1.0;
+    LogTagWarning("EntityCreation", "textRender.color.b is nil.");
+    }
+
+    lua_pop(L, 3);
+  }
+  else
+  {
+    textRender->color[0] = 1.0;
+    textRender->color[1] = 1.0;
+    textRender->color[2] = 1.0;
+    LogTagWarning("EntityCreation", "textRender.color is nil.");
+  }
+  lua_pop(L, 1);
+
+  textRender->drawLayer = 0;
 }
 
-void AddColliderComp(ecs_world_t *world, ecs_entity_t ent)
+void AddAnimatorComp(EcsWorld *world, EcsID ent)
 {
+  Animator *animator = EcsAddComponent(world, ent, AnimatorComp);
+
+  lua_getfield(L, -1, "animation");
+  if(lua_isstring(L, -1))
+  {
+    animator->currentAnimation = GetAnimation(lua_tostring(L, -1));
+  }
+  else
+  {
+    animator->currentAnimation = GetAnimation("default");
+    LogTagWarning("EntityCreation", "animator.animation is nil.");
+  }
+  lua_pop(L, 1);
+
+  lua_getfield(L, -1, "drawLayer");
+  if(lua_isnumber(L, -1))
+  {
+    animator->drawLayer = lua_tonumber(L, -1);
+  }
+  else
+  {
+    animator->drawLayer = 0;
+    LogTagWarning("EntityCreation", "animator.drawLayer is nil.");
+  }
+  lua_pop(L, 1);
+
+  animator->flip = FALSE;
 }
 
-void AddStatsComp(ecs_world_t *world, ecs_entity_t ent)
+void AddColliderComp(EcsWorld *world, EcsID ent)
 {
-  Stats *stats = calloc(1, sizeof(Stats));
+  Collider *collider = EcsAddComponent(world, ent, ColliderComp);
+  lua_getfield(L, -1, "width");
+  lua_getfield(L, -2, "height");
+
+  if(lua_isnumber(L, -1))
+  {
+    collider->height = lua_tonumber(L, -1);
+  }
+  else
+  {
+    LogTagWarning("EntityCreation", "collider.height is nil.");
+    collider->height = 1;
+  }
+
+  if(lua_isnumber(L, -2))
+  {
+    collider->width = lua_tonumber(L, -2);
+  }
+  else
+  {
+    LogTagWarning("EntityCreation", "collider.width is nil.");
+    collider->width = 1;
+  }
+
+  lua_pop(L, 2);
+
+  collider->collisionLayer = 0;
+}
+
+void AddStatsComp(EcsWorld *world, EcsID ent)
+{
+  Stats *stats = EcsAddComponent(world, ent, StatsComp);
   lua_getfield(L, -1, "health");
   lua_getfield(L, -2, "speed");
 
@@ -238,8 +395,6 @@ void AddStatsComp(ecs_world_t *world, ecs_entity_t ent)
   }
 
   lua_pop(L, 2);
-
-  ecs_set_id(world, ent, ecs_id(Stats), sizeof(Stats), stats);
 }
 
 int GetComponentIfExists(const char *comp)
@@ -253,22 +408,29 @@ int GetComponentIfExists(const char *comp)
   return 1;
 }
 
-void CreateLuaEntity(ecs_world_t *world, const char *entity, ecs_entity_t id)
+void CreateLuaEntity(EcsWorld *world, const char *entity, int id)
 {
-  lua_getglobal(L, "NewEntity");
+  lua_getglobal(L, "Ecs");
+  lua_getfield(L, -1, "AddEntity");
+  lua_insert(L, -2);
+
   lua_getglobal(L, entity);
+  lua_getfield(L, -1, "New");
+  lua_insert(L, -2);
+  lua_pushnil(L);
   lua_pushnumber(L, id);
 
-  if(lua_pcall(L, 2, 1, 0) != 0)
+  if(lua_pcall(L, 3, 1, 0) != LUA_OK)
   {
     LogTagError("EntityCreation", "Failed creating entity `%s` [id:%i]", entity, id);
     return;
   }
 
+  lua_getfield(L, -1, "components");
+
   //Transform
   if(GetComponentIfExists("transform"))
   {
-    LogDebug("Adding transform");
     AddTransformComp(world, id);
     lua_pop(L, 1);
   }
@@ -276,21 +438,82 @@ void CreateLuaEntity(ecs_world_t *world, const char *entity, ecs_entity_t id)
   //SpriteRender
   if(GetComponentIfExists("spriteRender"))
   {
-    LogDebug("Adding spriteRender");
     AddSpriteRenderComp(world, id);
+    lua_pop(L, 1);
+  }
+
+  //TilemapRender
+  if(GetComponentIfExists("tilemapRender"))
+  {
+    AddTilemapRenderComp(world, id);
+    lua_pop(L, 1);
+  }
+  
+  //TextRender
+  if(GetComponentIfExists("textRender"))
+  {
+    AddTextRenderComp(world, id);
     lua_pop(L, 1);
   }
 
   //Stats
   if(GetComponentIfExists("stats"))
   {
-    LogDebug("Adding stats");
     AddStatsComp(world, id);
     lua_pop(L, 1);
   }
 
-  //Pop entity
+  //Collider
+  if(GetComponentIfExists("collider"))
+  {
+    AddColliderComp(world, id);
+    lua_pop(L, 1);
+  }
+
+  //Animator
+  if(GetComponentIfExists("animator"))
+  {
+    AddAnimatorComp(world, id);
+    lua_pop(L, 1);
+  }
+
+  //Required tags
+  EcsAddComponent(world, id, NewTag);
+  EcsAddComponent(world, id, UpdateTag);
+
   lua_pop(L, 1);
+
+  if(lua_pcall(L, 2, 0, 0) != LUA_OK)
+  {
+    LogTagError("EntityCreation", "Failed adding entity `%s` [id:%i]", entity, id);
+    return;
+  }
+}
+
+void CallRemoveEntity(int id)
+{
+  lua_getglobal(L, "Ecs");
+  lua_getfield(L, -1, "RemoveEntity");
+  lua_insert(L, -2);
+  lua_pushnumber(L, id);
+
+  if(lua_pcall(L, 2, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running RemoveEntity: %s", lua_tostring(L, -1));
+  }
+}
+
+void LoadLuaScene(const char *name)
+{
+  lua_getglobal(L, "Ecs");
+  lua_getfield(L, -1, "LoadScene");
+  lua_insert(L, -2);
+  lua_pushstring(L, name);
+
+  if(lua_pcall(L, 2, 0, 0) != LUA_OK)
+  {
+    LogTagError("ScriptEngine", "Failed running LoadScene: %s", lua_tostring(L, -1));
+  }
 }
 
 void DisposeScriptingEngine()

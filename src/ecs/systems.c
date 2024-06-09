@@ -1,90 +1,266 @@
 #include "systems.h"
 #include "components.h"
+#include "components_util.h"
 #include "../rendering/rendering_sprites.h"
 #include "../rendering/rendering_tilemaps.h"
 #include "../rendering/rendering_text.h"
+#include "../rendering/rendering_debug.h"
+#include "../scripting/script_engine.h"
 #include "../window/window.h"
 #include "../resource_management/assets_library.h"
-#include "cglm/cglm.h"
+#include "ecs.h"
+#include "../logger/logger.h"
 
-ECS_SYSTEM_DECLARE(SpriteRenderSystem);
-
-void SpriteRenderSystem(ecs_iter_t *it)
+void system_Start(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
 {
-  SpriteRender *spriteRender = ecs_field(it, SpriteRender, 1);
-  Transform *transform = ecs_field(it, Transform, 2);
-
-
-  for(int i = 0; i < it->count; i++)
+  for(int i = 0; i < numOfEntities; i++)
   {
-    if(spriteRender[i].visible)
+    EcsID e = entities[i];
+    CallOnStart(e);
+    EcsRemoveComponent(world, e, NewTag);
+  }
+}
+
+void system_Update(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
+{
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    EcsID e = entities[i];
+    CallOnUpdate(e, deltaTime);
+  }
+}
+
+void system_Destroy(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
+{
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    EcsID e = entities[i];
+    CallOnDestroy(e);
+    CallRemoveEntity(e);
+    EcsDestroyEntity(world, e);
+  }
+}
+
+void system_RenderSprites(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
+{
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    EcsID e = entities[i];
+    SpriteRender *spriteRender = EcsGetComponent(world, e, SpriteRenderComp);
+    if(spriteRender->visible)
     {
-      vec2 parentPos = {0, 0};
-      ecs_entity_t parent = transform[i].parent;
-      while(parent != 0)
-      {
-        const Transform *parentTransform = ecs_get_id(it->world, parent, ecs_id(Transform));
-        parentPos[0] += parentTransform->position[0];
-        parentPos[1] += parentTransform->position[1];
+      Transform *transform = EcsGetComponent(world, e, TransformComp);
 
-        parent = parentTransform->parent;
-      }
-      vec2 pos = {transform[i].position[0] + parentPos[0] - transform[i].size[0] * 0.5f,
-                  transform[i].position[1] + parentPos[1] - transform[i].size[1] * 0.5f};
+      float scale = GetGameWindowHeight() / 1080.f;
+      vec2 size = {transform->size[0] * transform->scale[0],
+                   transform->size[1] * transform->scale[1]};
 
-      DrawSprite(spriteRender[i].sprite,
+      vec2 pos = {(transform->position[0] - (size[0] * 0.5f)) * scale,
+                  (transform->position[1] - (size[1] * 0.5f)) * scale};
+
+      size[0] *= scale;
+      size[1] *= scale;
+      
+      DrawSprite(spriteRender->sprite,
                  GetProjectionMatrix(),
+                 spriteRender->drawLayer,
                  pos,
-                 transform[i].size,
-                 transform[i].rotation,
-                 spriteRender[i].flipX,
-                 spriteRender[i].flipY);
+                 size,
+                 transform->rotation,
+                 spriteRender->flipX,
+                 spriteRender->flipY);
     }
   }
 }
 
-ECS_SYSTEM_DECLARE(TilemapRenderSystem);
-
-void TilemapRenderSystem(ecs_iter_t *it)
+void system_RenderTilemap(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
 {
-  TilemapRender *tilemapRender = ecs_field(it, TilemapRender, 1);
-  Transform *transform = ecs_field(it, Transform, 2);
-
-  for(int i = 0; i < it->count; i++)
+  for(int i = 0; i < numOfEntities; i++)
   {
-    DrawTilemap(tilemapRender[i].tilemap,
+    EcsID e = entities[i];
+
+    TilemapRender *tilemapRender = EcsGetComponent(world, e, TilemapRenderComp);
+    Transform *transform = EcsGetComponent(world, e, TransformComp);
+
+    float scale = GetGameWindowHeight() / 1080.f;
+
+    vec2 pos = {transform->position[0] * scale, transform->position[1] * scale};
+    vec2 size = {transform->size[0] * transform->scale[0] * scale, transform->size[1] * transform->scale[1] * scale};
+
+    DrawTilemap(tilemapRender->tilemap,
                 GetShader("tilemap"),
                 GetProjectionMatrix(),
-                transform[i].position,
-                transform[i].size,
-                transform[i].rotation);
+                pos,
+                size,
+                transform->rotation);
   }
 }
 
-ECS_SYSTEM_DECLARE(TextRenderSystem);
-
-void TextRenderSystem(ecs_iter_t *it)
+void system_RenderText(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
 {
-  TextRender *textRender = ecs_field(it, TextRender, 1);
-  Transform *transform = ecs_field(it, Transform, 2);
-
-  for (int i = 0; i < it->count; i++)
+  for (int i = 0; i < numOfEntities; i++)
   {
+    EcsID e = entities[i];
+
+    TextRender *textRender = EcsGetComponent(world, e, TextRenderComp);
+    Transform *transform = EcsGetComponent(world, e, TransformComp);
+
     RenderText(GetShader("text"),
                GetProjectionMatrix(),
-               GetFont(textRender[i].font),
-               textRender[i].text,
-               transform[i].position,
-               textRender[i].scale,
-               textRender[i].color);
+               textRender->drawLayer,
+               GetFont(textRender->font),
+               textRender->text,
+               transform->position,
+               textRender->scale,
+               textRender->color);
   }
 }
 
-void SystemsModuleImport(ecs_world_t *world)
+void system_AnimationRender(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
 {
-  ECS_MODULE(world, SystemsModule);
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    EcsID e = entities[i];
 
-  ECS_SYSTEM_DEFINE(world, SpriteRenderSystem, 0, SpriteRender, Transform);
-  ECS_SYSTEM_DEFINE(world, TilemapRenderSystem, 0, TilemapRender, Transform);
-  ECS_SYSTEM_DEFINE(world, TextRenderSystem, 0, TextRender, Transform);
+    Animator *animator = EcsGetComponent(world, e, AnimatorComp);
+    Transform *transform = EcsGetComponent(world, e, TransformComp);
+
+    float scale = GetGameWindowHeight() / 1080.f;
+    vec2 size = {(transform->size[0] * transform->scale[0]),
+      (transform->size[1] * transform->scale[1])};
+
+    vec2 pos = {(transform->position[0] - (size[0] * 0.5f)) * scale,
+      (transform->position[1] - (size[1] * 0.5f)) * scale};
+
+    size[0] *= scale;
+    size[1] *= scale;
+
+    DrawSpritesheetFrame(animator->currentAnimation->spritesheet,
+                         GetProjectionMatrix(),
+                         animator->drawLayer,
+                         animator->currentAnimation->row,
+                         animator->currentFrame,
+                         pos,
+                         size,
+                         transform->rotation,
+                         animator->flip);
+  }
+}
+
+void system_Animation(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
+{
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    EcsID e = entities[i];
+
+    Animator *animator = EcsGetComponent(world, e, AnimatorComp);
+
+    animator->frameCounter++;
+    if(animator->frameCounter % animator->currentAnimation->speed == 0)
+    {
+      animator->currentFrame = (animator->currentFrame + 1) % animator->currentAnimation->frames;
+      animator->frameCounter = 0;
+    }
+  }
+}
+
+void system_CollisionTest(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
+{
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    for (int j = i + 1; j < numOfEntities; j++)
+    {
+      if(AreColliding(world, entities[i], entities[j]))
+      {
+        CallOnCollision(entities[i], entities[j]);
+      } 
+    }
+  }
+}
+
+void system_RenderDebugCollider(EcsWorld *world, EcsID *entities, unsigned long long numOfEntities, float deltaTime)
+{
+  for(int i = 0; i < numOfEntities; i++)
+  {
+    EcsID e = entities[i];
+
+    Transform *transform = EcsGetComponent(world, e, TransformComp);
+    Collider *collider = EcsGetComponent(world, e, ColliderComp);
+
+    float scale = GetGameWindowHeight() / 1080.f;
+
+    vec2 size = {(transform->size[0] * transform->scale[0]),
+      (transform->size[1] * transform->scale[1])};
+
+    vec2 colSize = {collider->width * scale, collider->height * scale};
+
+    vec2 pos = {(transform->position[0] - (collider->width * 0.5f)) * scale,
+      (transform->position[1] - (collider->height * 0.5f)) * scale};
+
+    vec3 color = {0.0f, 1.0f, 0.0f};
+
+    DrawRect(GetProjectionMatrix(), pos, colSize, 0, color);
+  }
+}
+
+EcsID StartSystem;
+EcsID UpdateSystem;
+EcsID DestroySystem;
+EcsID SpriteRenderSystem;
+EcsID TilemapRenderSystem;
+EcsID TextRenderSystem;
+EcsID AnimationSystem;
+EcsID AnimationRenderSystem;
+EcsID CollisionSystem;
+
+EcsID RenderDebugColliderSystem;
+
+void RegisterSystems(EcsWorld *world)
+{
+  StartSystem = EcsRegisterSystem(world, system_Start);
+  UpdateSystem = EcsRegisterSystem(world, system_Update);
+  DestroySystem = EcsRegisterSystem(world, system_Destroy);
+  SpriteRenderSystem = EcsRegisterSystem(world, system_RenderSprites);
+  TilemapRenderSystem = EcsRegisterSystem(world, system_RenderTilemap);
+  TextRenderSystem = EcsRegisterSystem(world, system_RenderText);
+  AnimationSystem = EcsRegisterSystem(world, system_Animation);
+  AnimationRenderSystem = EcsRegisterSystem(world, system_AnimationRender);
+  CollisionSystem = EcsRegisterSystem(world, system_CollisionTest);
+  RenderDebugColliderSystem = EcsRegisterSystem(world, system_RenderDebugCollider);
+
+  //StartSystem
+  EcsRequireComponent(world, StartSystem, NewTag);
+
+  //UpdateSystem
+  EcsRequireComponent(world, UpdateSystem, UpdateTag);
+
+  //DestroySytem
+  EcsRequireComponent(world, DestroySystem, DestroyTag);
+
+  //SpriteRenderSystem
+  EcsRequireComponent(world, SpriteRenderSystem, SpriteRenderComp);
+  EcsRequireComponent(world, SpriteRenderSystem, TransformComp);
+
+  //TilemapRenderSystem
+  EcsRequireComponent(world, TilemapRenderSystem, TilemapRenderComp);
+  EcsRequireComponent(world, TilemapRenderSystem, TransformComp);
+  
+  //TextRenderSystem
+  EcsRequireComponent(world, TextRenderSystem, TextRenderComp);
+  EcsRequireComponent(world, TextRenderSystem, TransformComp);
+
+  //AnimationSystem
+  EcsRequireComponent(world, AnimationSystem, AnimatorComp);
+
+  //AnimationRenderSystem
+  EcsRequireComponent(world, AnimationRenderSystem, AnimatorComp);
+  EcsRequireComponent(world, AnimationRenderSystem, TransformComp);
+
+  //CollisionSystem
+  EcsRequireComponent(world, CollisionSystem, ColliderComp);
+  EcsRequireComponent(world, CollisionSystem, TransformComp);
+
+  //RenderDebugColliderSystem
+  EcsRequireComponent(world, RenderDebugColliderSystem, TransformComp);
+  EcsRequireComponent(world, RenderDebugColliderSystem, ColliderComp);
 }

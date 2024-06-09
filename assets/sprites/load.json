@@ -4,29 +4,5 @@
     "shader" : "sprite",
     "texture" : "default",
     "colorMask" : [1.0, 1.0, 1.0]
-  },
-  {
-    "name" : "smiley",
-    "shader" : "sprite",
-    "texture" : "smiley",
-    "colorMask" : [1.0, 1.0, 1.0]
-  },
-  {
-    "name" : "human",
-    "shader" : "sprite",
-    "texture" : "human",
-    "colorMask" : [1.0, 1.0, 1.0]
-  },
-  {
-    "name" : "bullet",
-    "shader" : "sprite",
-    "texture" : "bullet",
-    "colorMask" : [1.0, 1.0, 1.0]
-  },
-  {
-    "name" : "gun",
-    "shader" : "sprite",
-    "texture" : "gun",
-    "colorMask" : [1.0, 1.0, 1.0]
   }
 ]}

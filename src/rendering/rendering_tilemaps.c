@@ -3,8 +3,6 @@
 
 void DrawTilemap(Tilemap *map, Shader *shader, mat4 *projection, vec2 position, vec2 size, float rotation)
 {
-  UseShader(*shader);
-
   mat4 model = GLM_MAT4_IDENTITY_INIT;
 
   glm_translate(model, (vec3){position[0], position[1], 0.0f});
@@ -18,6 +16,8 @@ void DrawTilemap(Tilemap *map, Shader *shader, mat4 *projection, vec2 position, 
 
   for(int i = 0; i < map->layersCount; i++)
   {
+    ShaderSetInteger(*shader, "layer", map->layers[i].drawLayer, FALSE);
+
     glActiveTexture(GL_TEXTURE0);
     BindTexture(map->layers[i].tilesetTexture);
 

@@ -1,21 +1,24 @@
 #ifndef COMPONENTS_H
 #define COMPONENTS_H
 
-#include "flecs/flecs.h"
+#include "ecs.h"
 #include "cglm/types.h"
+#include <windows.h>
 #include "../sprite/sprite.h"
 #include "../tilemap/tilemap.h"
+#include "../animation/animation.h"
 
-typedef struct Transform Transform;
-struct Transform
+typedef struct
 {
   vec2 position;
   vec2 size;
   vec2 scale;
   float rotation;
 
-  int parent;
-};
+  EcsID parent;
+  long numOfChildren;
+  EcsID *children;
+} Transform;
 
 typedef struct
 {
@@ -33,12 +36,21 @@ typedef struct
 
 typedef struct
 {
-  char *text;
-  char *font;
+  const char *text;
+  const char *font;
   float scale;
   vec3 color;
   int drawLayer;
 } TextRender;
+
+typedef struct
+{
+  Animation *currentAnimation;
+  int currentFrame;
+  int frameCounter;
+  BOOL flip;
+  int drawLayer;
+} Animator;
 
 typedef struct
 {
@@ -48,22 +60,30 @@ typedef struct
 
 typedef struct
 {
+  int collisionLayer;
   float width, height;
   float offsetX, offsetY;
 } Collider;
 
-extern ecs_entity_t PlayerTag;
-extern ecs_entity_t EnemyTag;
-extern ecs_entity_t ProjectileTag;
-extern ecs_entity_t ItemTag;
+typedef struct
+{
+  const char *name;
+  const char *type;
+} GameObject;
 
-extern ECS_COMPONENT_DECLARE(Transform);
-extern ECS_COMPONENT_DECLARE(SpriteRender);
-extern ECS_COMPONENT_DECLARE(TilemapRender);
-extern ECS_COMPONENT_DECLARE(TextRender);
-extern ECS_COMPONENT_DECLARE(Stats);
-extern ECS_COMPONENT_DECLARE(Collider);
+extern EcsID TransformComp;
+extern EcsID SpriteRenderComp;
+extern EcsID TilemapRenderComp;
+extern EcsID TextRenderComp;
+extern EcsID AnimatorComp;
+extern EcsID StatsComp;
+extern EcsID ColliderComp;
+extern EcsID GameObjectComp;
 
-void ComponentsModuleImport(ecs_world_t *world);
+extern EcsID NewTag;
+extern EcsID UpdateTag;
+extern EcsID DestroyTag;
+
+void RegisterComponents(EcsWorld *world);
 
 #endif

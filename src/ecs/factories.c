@@ -2,15 +2,11 @@
 #include "components.h"
 #include "../scripting/script_engine.h"
 #include "../logger/logger.h"
-#include "../resource_management/assets_library.h"
+#include "ecs.h"
 
-ecs_entity_t CreateEntity(ecs_world_t *world, const char *entity, const char *name, vec2 position, float rotation, const char *parent)
+EcsID CreateEntity(EcsWorld *world, const char *entity, vec2 position, float rotation, const char *parent)
 {
-  ecs_entity_t ent = ecs_new_id(world);
-  if(name != NULL)
-  {
-    ecs_set_name(world, ent, name);
-  }
+  EcsID ent = EcsCreateEntity(world);
 
   if(!EntityExists(entity))
   {
@@ -23,31 +19,20 @@ ecs_entity_t CreateEntity(ecs_world_t *world, const char *entity, const char *na
   }
 
   Transform *transform = NULL;
-  if(!ecs_has_id(world, ent, ecs_id(Transform)))
+  if(!EcsHasComponent(world, ent, TransformComp))
   {
-    ecs_add_id(world, ent, ecs_id(Transform));
+    EcsAddComponent(world, ent, TransformComp);
   }
 
-  transform = ecs_get_mut_id(world, ent, ecs_id(Transform));
+  transform = EcsGetComponent(world, ent, TransformComp);
 
   transform->position[0] = position[0];
   transform->position[1] = position[1];
   transform->rotation = rotation;
 
-  if(parent != NULL)
-  {
-    ecs_id_t parentId = ecs_lookup(world, parent);
-    if(parentId == 0)
-    {
-      LogWarning("Entity with name `%s` doesn't exists", parent);
-    }
-    else
-    {
-      transform->parent = parentId;
-    }
-  }
+  transform->scale[0] = 1;
+  transform->scale[1] = 1;
 
   CallOnCreate(ent);
-
   return ent;
 }
