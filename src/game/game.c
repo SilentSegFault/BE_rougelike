@@ -8,15 +8,17 @@
 #include "../ecs/ecs.h"
 #include "../scripting/script_engine.h"
 #include "../rendering/rendering_text.h"
+#include "../ecs/factories.h"
 
 Game currentGame = {0};
 int pause = 0;
 int drawDebug = 0;
+const char *sceneToLoad = NULL;
 
 void InitGame(void)
 {
   currentGame.currentScene = NULL;
-  //LoadScene("testScene");
+  LoadScene("StartMenu");
 }
 
 void Update(double deltaTime)
@@ -24,20 +26,17 @@ void Update(double deltaTime)
   currentGame.gameTime += deltaTime;
   currentGame.frameCount += 1;
 
+  if(sceneToLoad != NULL)
+  {
+    LoadScene(sceneToLoad);
+    sceneToLoad = NULL;
+  }
+
   if(KeyDown(KEY_F11))
     ToggleFullScreen();
 
   if(KeyDown(KEY_F1))
     drawDebug = !drawDebug;
-
-  if(KeyDown(KEY_1))
-  {
-    LoadScene("testScene");
-  }
-  else if(KeyDown(KEY_2))
-  {
-    LoadScene("testScene2");
-  }
 
   if(KeyDown(KEY_ESC))
     pause = !pause;
@@ -55,7 +54,6 @@ void Update(double deltaTime)
   EcsUpdateSystem(scene->world, DestroySystem, 0);
 }
 
-int frame = 0;
 void Render(void)
 {
   UpdateProjectionMatrix();
@@ -94,6 +92,11 @@ void LoadScene(const char *sceneName)
   LoadLuaScene(sceneName);
   InitScene(scene);
   currentGame.currentScene = scene;
+}
+
+void QueueLoadScene(const char *sceneName)
+{
+  sceneToLoad = sceneName;
 }
 
 Scene* GetCurrentScene()

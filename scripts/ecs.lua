@@ -36,7 +36,7 @@ end
 
 function ecs:GetEntity(id)
 	if self.currentScene[id] == nil then
-		LogWarning("Entity with id " .. id .. " doesn't exists")
+		LogWarning("Entity with doesn't exists")
 		return
 	end
 

@@ -1,5 +1,52 @@
 {"load" : [
-  {"name" : "testScene", "entities" : [
-    {"name": "player", "type" : "Player", "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  {"name" : "StartMenu", "entities" : [
+    {"name": "start_menu", "type" : "StartMenu",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+    {"name": "start_button", "type" : "StartButton",
+      "position" : {"x" : 960, "y" : 504}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+    {"name": "start_label", "type" : "StartLabel",
+      "position" : {"x" : 740, "y" : 524}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+
+    {"name": "quit_button", "type" : "QuitButton",
+      "position" : {"x" : 960, "y" : 864}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+    {"name": "quit_label", "type" : "QuitLabel",
+      "position" : {"x" : 740, "y" : 884}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+
+    {"name": "title_label", "type" : "GameTitleLabel",
+      "position" : {"x" : 500, "y" : 164}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level1", "entities" : [
+    {"name": "main", "type" : "Level1",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level21", "entities" : [
+    {"name": "main", "type" : "Level21",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level22", "entities" : [
+    {"name": "main", "type" : "Level22",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level31", "entities" : [
+    {"name": "main", "type" : "Level31",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level32", "entities" : [
+    {"name": "main", "type" : "Level32",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level33", "entities" : [
+    {"name": "main", "type" : "Level33",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "EndMenu", "entities" : [
+    {"name": "start_menu", "type" : "StartMenu",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+    {"name": "quit_button", "type" : "QuitButton",
+      "position" : {"x" : 960, "y" : 504}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+    {"name": "quit_label", "type" : "QuitLabel",
+      "position" : {"x" : 740, "y" : 524}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
+    {"name": "lost_label", "type" : "LostLabel",
+      "position" : {"x" : 740, "y" : 164}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
   ]}
 ]}

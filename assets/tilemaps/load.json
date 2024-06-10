@@ -1,3 +1,9 @@
 {"load" : [
-  {"name" : "default", "source" : "default.json"}
+  {"name" : "default", "source" : "default.json"},
+  {"name" : "startmenu", "source" : "start_menu.json"},
+  {"name" : "basement", "source" : "basement.json"},
+  {"name" : "level21", "source" : "level2_1.json"},
+  {"name" : "level22", "source" : "level2_2.json"},
+  {"name" : "level31", "source" : "level3_1.json"},
+  {"name" : "level33", "source" : "level3_3.json"}
 ]}

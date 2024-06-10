@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define ECS_MAX_ENTITIES 256
+#define ECS_MAX_ENTITIES 1024
 #define ECS_MAX_SYSTEMS 16
 #define ECS_MAX_COMPONENTS 32
 

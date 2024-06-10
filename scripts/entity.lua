@@ -1,6 +1,7 @@
 local entity = {
 	id = -1,
 	components = {},
+	tags = {},
 }
 
 function entity:New(o, id)
@@ -13,6 +14,16 @@ end
 
 function entity:SetID(id)
 	self.id = id
+end
+
+function entity:HasTag(tag)
+	for _, t in ipairs(self.tags) do
+		if t == tag then
+			return true
+		end
+	end
+
+	return false
 end
 
 function entity:OnCreate()

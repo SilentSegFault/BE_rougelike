@@ -19,6 +19,7 @@ void Render(void);
 void DisposeGame(void);
 
 void LoadScene(const char *sceneName);
+void QueueLoadScene(const char *sceneName);
 Scene* GetCurrentScene();
 void UnloadScene();
 

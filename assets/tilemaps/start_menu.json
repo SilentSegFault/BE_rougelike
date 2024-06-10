@@ -1,0 +1,10 @@
+{"tilemap" : {
+  "width" : 1,
+  "height" : 1,
+  "mapLayers" : [
+    {
+      "layer" : -1,
+      "tileset" : "startmenu",
+      "tilesData" : [0]
+    }]
+}}

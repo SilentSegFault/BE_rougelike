@@ -4,5 +4,47 @@
     "shader" : "sprite",
     "texture" : "default",
     "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "btn_background1",
+    "shader" : "sprite",
+    "texture" : "btn_background1",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "startmenu_background",
+    "shader" : "sprite",
+    "texture" : "startmenu_background",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "desk",
+    "shader" : "sprite",
+    "texture" : "desk",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "weapon",
+    "shader" : "sprite",
+    "texture" : "weapon",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "projectile",
+    "shader" : "sprite",
+    "texture" : "projectile",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "enemyProjectile",
+    "shader" : "sprite",
+    "texture" : "enemyProjectile",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "door",
+    "shader" : "sprite",
+    "texture" : "door",
+    "colorMask" : [1.0, 1.0, 1.0]
   }
 ]}

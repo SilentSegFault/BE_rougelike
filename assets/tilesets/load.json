@@ -6,5 +6,38 @@
     "tileHeight" : 200,
     "tileCount" : 1,
     "columns" : 1
+  },
+  {
+    "name" : "startmenu",
+    "texture" : "startmenu_background",
+    "tileWidth" : 64,
+    "tileHeight" : 36,
+    "tileCount" : 1,
+    "columns" : 1
+  },
+  {
+    "name" : "basement",
+    "texture" : "basement",
+    "tileWidth" : 32,
+    "tileHeight" : 32,
+    "tileCount" : 7,
+    "columns" : 7
+  },
+  {
+    "name" : "room",
+    "texture" : "room",
+    "tileWidth" : 32,
+    "tileHeight" : 32,
+    "tileCount" : 7,
+    "columns" : 7
+  },
+  {
+    "name" : "bossRoom",
+    "texture" : "bossRoom",
+    "tileWidth" : 32,
+    "tileHeight" : 32,
+    "tileCount" : 7,
+    "columns" : 7
   }
+
 ]}

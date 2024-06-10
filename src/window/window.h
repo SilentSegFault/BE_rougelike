@@ -19,6 +19,8 @@ typedef struct
 void InitGameWindow(const char *name, int width, int height, BOOL resizable);
 int GetGameWindowWidth();
 int GetGameWindowHeight();
+float GetMouseX();
+float GetMouseY();
 void UpdateGameWindowSize(int width, int height);
 void SwapGameWindowBuffers();
 void PollGameWindowEvents();
@@ -26,5 +28,6 @@ BOOL GameWindowShouldClose();
 mat4* GetProjectionMatrix();
 void UpdateProjectionMatrix();
 void ToggleFullScreen();
+void QuitApp();
 
 #endif

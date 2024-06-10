@@ -49,6 +49,7 @@ typedef struct
   int currentFrame;
   int frameCounter;
   BOOL flip;
+  BOOL playOnce;
   int drawLayer;
 } Animator;
 

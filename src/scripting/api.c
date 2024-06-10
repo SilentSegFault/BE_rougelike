@@ -11,6 +11,7 @@
 #include <string.h>
 #include "../utility/ut_math.h"
 #include "../ecs/components_util.h"
+#include "../utility/rand.h"
 
 void RegisterFunction(lua_State *L, const char *name, lua_CFunction func)
 {
@@ -265,8 +266,8 @@ int api_KeyDown(lua_State *L)
 
 int api_GetMousePos(lua_State *L)
 {
-  lua_pushnumber(L, mouseX);
-  lua_pushnumber(L, mouseY);
+  lua_pushnumber(L, GetMouseX());
+  lua_pushnumber(L, GetMouseY());
 
   return 2;
 }
@@ -344,14 +345,10 @@ int api_GetEntityRotation(lua_State *L)
 
 int api_SetEntityParent(lua_State *L)
 {
-  lua_getfield(L, 1, "id");
-  int id = luaL_checknumber(L, -1);
-  lua_pop(L, 1);
-
+  int childId = luaL_checknumber(L, 1);
   int parentId = luaL_checknumber(L, 2);
-  
-  Transform *transform = EcsGetComponent(GetCurrentScene()->world, id, TransformComp);
-  transform->parent = parentId;
+
+  SetEntitiesTranformRelationship(GetCurrentScene()->world, childId, parentId);
 
   return 0;
 }
@@ -364,8 +361,56 @@ int api_PlayAnimation(lua_State *L)
 
   const char *animationName = luaL_checkstring(L, 2);
   BOOL flip = luaL_checknumber(L, 3);
-  SetAnimation(GetCurrentScene()->world, id, animationName, flip);
+  SetAnimation(GetCurrentScene()->world, id, animationName, flip, FALSE);
 
+  return 0;
+}
+
+int api_PlayAnimationOnce(lua_State *L)
+{
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  const char *animationName = luaL_checkstring(L, 2);
+  BOOL flip = luaL_checknumber(L, 3);
+  SetAnimation(GetCurrentScene()->world, id, animationName, flip, TRUE);
+
+  return 0;
+}
+
+int api_AnimationFinished(lua_State *L)
+{
+  lua_getfield(L, 1, "id");
+  int id = luaL_checknumber(L, -1);
+  lua_pop(L, 1);
+
+  lua_pushboolean(L, AnimationFinished(GetCurrentScene()->world, id));
+  return 1;
+}
+
+int api_LoadScene(lua_State *L)
+{
+  const char *sceneName = luaL_checkstring(L, 1);
+
+  QueueLoadScene(sceneName);
+  return 0;
+}
+
+int api_RandomRange(lua_State *L)
+{
+  float min = luaL_checknumber(L, 1);
+  float max = luaL_checknumber(L, 2);
+
+  float rand = Randf(min, max);
+  lua_pushnumber(L, rand);
+
+  return 1;
+}
+
+int api_QuitGame(lua_State *L)
+{
+  QuitApp();
   return 0;
 }
 
@@ -394,6 +439,9 @@ void RegisterApiFunctions(lua_State *L)
   RegisterFunction(L, "GetEntityPos", api_GetEntityPos);
   RegisterFunction(L, "GetDirection", api_GetDirection);
   RegisterFunction(L, "GetEntityRotation", api_GetEntityRotation);
+  RegisterFunction(L, "LoadScene", api_LoadScene);
+  RegisterFunction(L, "RandomRange", api_RandomRange);
+  RegisterFunction(L, "QuitGame", api_QuitGame);
 
   //Input
   RegisterFunction(L, "KeyPressed", api_KeyPressed);
@@ -405,4 +453,6 @@ void RegisterApiFunctions(lua_State *L)
   RegisterFunction(L, "SetEntityParent", api_SetEntityParent);
   RegisterFunction(L, "DestroyEntity", api_DestroyEntity);
   RegisterFunction(L, "PlayAnimation", api_PlayAnimation);
+  RegisterFunction(L, "PlayAnimationOnce", api_PlayAnimationOnce);
+  RegisterFunction(L, "AnimationFinished", api_AnimationFinished);
 }

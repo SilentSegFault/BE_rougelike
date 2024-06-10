@@ -1,3 +1,19 @@
 {"load" : [
-  {"name" : "default", "source" : "200px-Debugempty.png", "alpha" : true}
+  {"name" : "default", "source" : "200px-Debugempty.png", "alpha" : true},
+  {"name" : "btn_background1", "source" : "btn_bkground1.png", "alpha" : true},
+  {"name" : "startmenu_background", "source" : "startmenu_bkground.png", "alpha" : true},
+  {"name" : "basement", "source" : "basement.png", "alpha" : true},
+  {"name" : "player", "source" : "player.png", "alpha" : true},
+  {"name" : "char1", "source" : "char1.png", "alpha" : true},
+  {"name" : "desk", "source" : "desk.png", "alpha" : true},
+  {"name" : "weapon", "source" : "weapon.png", "alpha" : true},
+  {"name" : "projectile", "source" : "projectile.png", "alpha" : true},
+  {"name" : "enemyProjectile", "source" : "projectile1.png", "alpha" : true},
+  {"name" : "door", "source" : "door.png", "alpha" : true},
+  {"name" : "enemy1", "source" : "enemy1.png", "alpha" : true},
+  {"name" : "room", "source" : "room.png", "alpha" : true},
+  {"name" : "bossRoom", "source" : "boss_room.png", "alpha" : true},
+  {"name" : "boss", "source" : "boss.png", "alpha" : true},
+  {"name" : "bossSummon", "source" : "boss_summon.png", "alpha" : true},
+  {"name" : "chest", "source" : "chest.png", "alpha" : true}
 ]}

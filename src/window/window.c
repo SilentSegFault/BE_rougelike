@@ -30,6 +30,18 @@ int GetGameWindowHeight()
   return gameWindow.height;
 }
 
+float GetMouseX()
+{
+  float ratio = (float)mouseX / gameWindow.width;
+  return ratio * 1920;
+}
+
+float GetMouseY()
+{
+  float ratio = (float)mouseY / gameWindow.height;
+  return ratio * 1080;
+}
+
 void UpdateGameWindowSize(int width, int height)
 {
   gameWindow.width = width;
@@ -85,4 +97,9 @@ void ToggleFullScreen()
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
                  SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
   }
+}
+
+void QuitApp()
+{
+  gameWindow.shouldClose = TRUE;
 }

@@ -335,6 +335,7 @@ void AddAnimatorComp(EcsWorld *world, EcsID ent)
   lua_pop(L, 1);
 
   animator->flip = FALSE;
+  animator->playOnce = FALSE;
 }
 
 void AddColliderComp(EcsWorld *world, EcsID ent)
@@ -365,7 +366,19 @@ void AddColliderComp(EcsWorld *world, EcsID ent)
 
   lua_pop(L, 2);
 
-  collider->collisionLayer = 0;
+  lua_getfield(L, -1, "collisionLayer");
+
+  if(lua_isnumber(L, -1))
+  {
+    collider->collisionLayer = lua_tonumber(L, -1);
+  }
+  else
+  {
+    LogTagWarning("EntityCreation", "collider.collisionLayer is nil.");
+    collider->collisionLayer = 0;
+  }
+
+  lua_pop(L, 1);
 }
 
 void AddStatsComp(EcsWorld *world, EcsID ent)

@@ -14,6 +14,7 @@ void SetTransformParent(Transform *tranform, EcsID parent);
 void SetEntitiesTranformRelationship(EcsWorld *world, EcsID child, EcsID parent);
 
 int AreColliding(EcsWorld *world, EcsID e1, EcsID e2);
-void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip);
+void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip, BOOL playOnce);
+int AnimationFinished(EcsWorld *world, EcsID e);
 
 #endif

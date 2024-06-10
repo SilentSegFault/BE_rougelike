@@ -105,13 +105,16 @@ void system_RenderText(EcsWorld *world, EcsID *entities, unsigned long long numO
     TextRender *textRender = EcsGetComponent(world, e, TextRenderComp);
     Transform *transform = EcsGetComponent(world, e, TransformComp);
 
+    float scale = GetGameWindowHeight() / 1080.f;
+    vec2 pos = {transform->position[0] * scale, transform->position[1] * scale};
+
     RenderText(GetShader("text"),
                GetProjectionMatrix(),
                textRender->drawLayer,
                GetFont(textRender->font),
                textRender->text,
-               transform->position,
-               textRender->scale,
+               pos,
+               textRender->scale * scale,
                textRender->color);
   }
 }
@@ -155,10 +158,19 @@ void system_Animation(EcsWorld *world, EcsID *entities, unsigned long long numOf
 
     Animator *animator = EcsGetComponent(world, e, AnimatorComp);
 
+    if(animator->playOnce && animator->currentFrame >= animator->currentAnimation->frames)
+    {
+      continue;
+    }
+
     animator->frameCounter++;
     if(animator->frameCounter % animator->currentAnimation->speed == 0)
     {
-      animator->currentFrame = (animator->currentFrame + 1) % animator->currentAnimation->frames;
+      animator->currentFrame = animator->currentFrame + 1;
+      if(!animator->playOnce)
+      {
+        animator->currentFrame %= animator->currentAnimation->frames;
+      }
       animator->frameCounter = 0;
     }
   }
@@ -173,7 +185,8 @@ void system_CollisionTest(EcsWorld *world, EcsID *entities, unsigned long long n
       if(AreColliding(world, entities[i], entities[j]))
       {
         CallOnCollision(entities[i], entities[j]);
-      } 
+        CallOnCollision(entities[j], entities[i]);
+      }
     }
   }
 }

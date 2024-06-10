@@ -1,5 +1,6 @@
 #include "ecs.h"
 #include <stdlib.h>
+#include "../logger/logger.h"
 
 EcsWorld* EcsCreateWorld()
 {
@@ -10,7 +11,7 @@ EcsWorld* EcsCreateWorld()
   {
     world->idStack[i] = i;
   }
-  world->nextId = ECS_MAX_ENTITIES - 1;
+  world->nextId = 0;
   world->systems = calloc(ECS_MAX_SYSTEMS, sizeof(EcsSystem));
   world->numOfSystems = 0;
   world->entities = calloc(ECS_MAX_ENTITIES, sizeof(EcsEntity));
@@ -34,7 +35,8 @@ void EcsFreeWorld(EcsWorld *world)
 
 EcsID EcsCreateEntity(EcsWorld *world)
 {
-  EcsID id = world->idStack[world->nextId--];
+  LogDebug("nextID = %i", world->nextId);
+  EcsID id = world->idStack[world->nextId++];
   world->entities[id] |= IS_ALIVE_BIT;
   return id;
 }
@@ -46,11 +48,10 @@ int EcsIsEntitiyAlive(EcsWorld *world, EcsID entity)
 
 void EcsDestroyEntity(EcsWorld *world, EcsID entity)
 {
-  //TODO: clear all components data!!!!
-
   if(!EcsIsEntitiyAlive(world, entity))
     return;
 
+  //TODO: free component memory
   world->entities[entity] = 0;
   world->idStack[--world->nextId] = entity;
 }

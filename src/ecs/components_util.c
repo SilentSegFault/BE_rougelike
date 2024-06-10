@@ -113,7 +113,7 @@ int AreColliding(EcsWorld *world, EcsID e1, EcsID e2)
   Collider *collider1 = EcsGetComponent(world, e1, ColliderComp);
   Collider *collider2 = EcsGetComponent(world, e2, ColliderComp);
 
-  if(collider1->collisionLayer != collider2->collisionLayer)
+  if(collider1->collisionLayer == collider2->collisionLayer)
   {
     return 0;
   }
@@ -134,7 +134,7 @@ int AreColliding(EcsWorld *world, EcsID e1, EcsID e2)
   return x2 < (x1 + w1) && (x2 + w2) > x1 && y2 < (y1 + h1) && (y2 + h2) > y1;
 }
 
-void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip)
+void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip, BOOL playOnce)
 {
   Animator *animator = EcsGetComponent(world, e, AnimatorComp);
   if(animator == NULL)
@@ -153,4 +153,17 @@ void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip
   animator->currentFrame = 0;
   animator->currentAnimation = animation;
   animator->flip = flip;
+  animator->playOnce = playOnce;
+}
+
+int AnimationFinished(EcsWorld *world, EcsID e)
+{
+  Animator *animator = EcsGetComponent(world, e, AnimatorComp);
+  if(animator == NULL)
+  {
+    LogTagWarning("ComponentsUtil", "Entity doesn't have animator component.");
+    return 1;
+  }
+
+  return animator->currentFrame >= animator->currentAnimation->frames;
 }
