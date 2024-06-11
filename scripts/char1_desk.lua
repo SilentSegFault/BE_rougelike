@@ -11,7 +11,7 @@ local char1_desk = Entity:New({
 function char1_desk:OnCollision(ent)
 	if ent:HasTag("player") and not self.visited then
 		self.visited = true
-		SpawnEntity("Char1Label", 100, 400, 0)
+		SpawnEntity("Char1Label", 1250, 500, 0)
 		local playerX, playerY = GetEntityPos(ent)
 		local holderID = SpawnEntity("WeaponHolder", playerX, playerY, 0)
 		local weaponID = SpawnEntity("Weapon", playerX + 50, playerY, 0)

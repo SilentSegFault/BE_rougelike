@@ -7,7 +7,7 @@ local enemy1 = Entity:New({
 	tags = { "enemy" },
 })
 
-enemy1.health = 8
+enemy1.health = 4
 enemy1.attackTimer = 0
 enemy1.timeToAttack = 1
 enemy1.lastMove = { x = 0, y = 0 }

@@ -1,7 +1,7 @@
 local enemy_projectile = Entity:New({
 	components = {
 		transform = { size = { width = 50, height = 50 } },
-		spriteRender = { sprite = "enemyProjectile" },
+		spriteRender = { sprite = "enemyProjectile", drawLayer = 0 },
 		collider = { width = 20, height = 20, collisionLayer = 8 },
 	},
 	timeToLive = 7,

@@ -1,7 +1,7 @@
 local player_bulllet = Entity:New({
 	components = {
 		transform = { size = { width = 30, height = 30 } },
-		spriteRender = { sprite = "projectile" },
+		spriteRender = { sprite = "projectile", drawLayer = 0 },
 		collider = { width = 20, height = 20, collisionLayer = 8 },
 	},
 	timeToLive = 5,

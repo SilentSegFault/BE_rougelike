@@ -47,6 +47,6 @@
     {"name": "quit_label", "type" : "QuitLabel",
       "position" : {"x" : 740, "y" : 524}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
     {"name": "lost_label", "type" : "LostLabel",
-      "position" : {"x" : 740, "y" : 164}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+      "position" : {"x" : 680, "y" : 164}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
   ]}
 ]}

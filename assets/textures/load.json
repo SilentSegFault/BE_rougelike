@@ -15,5 +15,11 @@
   {"name" : "bossRoom", "source" : "boss_room.png", "alpha" : true},
   {"name" : "boss", "source" : "boss.png", "alpha" : true},
   {"name" : "bossSummon", "source" : "boss_summon.png", "alpha" : true},
+  {"name" : "bossDoor", "source" : "boss_door.png", "alpha" : true},
+  {"name" : "bench", "source" : "bench.png", "alpha" : true},
+  {"name" : "plants", "source" : "plants.png", "alpha" : true},
+  {"name" : "char2", "source" : "char2.png", "alpha" : true},
+  {"name" : "char3", "source" : "char3.png", "alpha" : true},
+  {"name" : "char4", "source" : "char4.png", "alpha" : true},
   {"name" : "chest", "source" : "chest.png", "alpha" : true}
 ]}

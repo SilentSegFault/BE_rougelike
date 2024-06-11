@@ -18,7 +18,12 @@ function level1:OnStart()
 	SpawnEntity("Level1Door", 1920 / 2, 150, 0)
 	SpawnEntity("Char1", 1500, 800, 0)
 	SpawnEntity("Char1Desk", 1420, 820, 0)
-	SpawnEntity("Player", 300, 300, 0)
+	SpawnEntity("Player", 1300, 300, 0)
+	for i = 1, 4, 1 do 
+	 for j = 1, 3 , 1 do 
+		SpawnEntity("Desk", i * 300, 200 + j * 200, 0)
+	 end
+	end
 end
 
 return level1

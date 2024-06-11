@@ -21,6 +21,10 @@ function level2_2:OnStart()
 	SpawnEntity("Level22Door", 1920 / 3, 150, 0)
 	SpawnEntity("Level22BossDoor", 2 * 1920 / 3, 150, 0)
 
+	SpawnEntity("Bench", 1920 - 200, 1080 - 150, math.pi )
+	SpawnEntity("Bench", 200, 1080 - 150, math.pi )
+	SpawnEntity("Plants",1920 / 2, 1080 -150, 0)
+
 	SpawnEntity("Door", 1920 - 67, 1080 / 2, math.pi / 2)
 
 	playerID = SpawnEntity("Player", LastPlayerPos.x, LastPlayerPos.y, 0)

@@ -2,7 +2,7 @@ local level2_2_boss_door = Entity:New({
 	components = {
 		transform = { size = { width = 120, height = 60 } },
 		collider = { width = 120, height = 60, collisionLayer = 10 },
-		spriteRender = { sprite = "door" },
+		spriteRender = { sprite = "bossDoor" },
 	},
 	tags = { "door" },
 })

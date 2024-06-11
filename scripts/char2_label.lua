@@ -1,7 +1,7 @@
-local char1_label = Entity:New({
+local char2_label = Entity:New({
 	components = {
 		textRender = {
-			text = "Take this you may need it. Now go.",
+			text = "Thank you for saving me !! :)",
 			scale = 1,
 			color = { r = 0, g = 0, b = 0 },
 		},
@@ -9,7 +9,7 @@ local char1_label = Entity:New({
 	timeToLive = 5,
 })
 
-function char1_label:OnUpdate(deltaTime)
+function char2_label:OnUpdate(deltaTime)
 	if self.timeToLive <= 0 then
 		DestroyEntity(self)
 	end
@@ -17,4 +17,4 @@ function char1_label:OnUpdate(deltaTime)
 	self.timeToLive = self.timeToLive - deltaTime
 end
 
-return char1_label
+return char2_label

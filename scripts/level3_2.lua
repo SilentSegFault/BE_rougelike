@@ -29,8 +29,11 @@ function level32:OnStart()
 
 	local doorID = SpawnEntity("Level32Door", 1920 / 2, 1080 - 60, 0)
 	FlipDown(Ecs:GetEntity(doorID))
+	local char3ID = SpawnEntity("Char3", 1920 -150, 200,0)
+	FlipLeft(Ecs:GetEntity(char3ID))
+	SpawnEntity("Char4", 200, 200,0 )
 
-	SpawnEntity("Enemy1", 200, 200, 0)
+	SpawnEntity("Enemy1", 300, 200, 0)
 	SpawnEntity("Enemy1", 100, 300, 0)
 
 	SpawnEntity("Enemy1", 1920 - 250, 200, 0)

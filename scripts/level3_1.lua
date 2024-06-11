@@ -30,6 +30,8 @@ function level31:OnStart()
 	local doorID = SpawnEntity("Level31Door", 1920 / 2, 1080 - 60, 0)
 	FlipDown(Ecs:GetEntity(doorID))
 
+	SpawnEntity("Char2", 1920 -150,200,0)
+
 	SpawnEntity("Enemy1", 1920 - 350, 200, 0)
 	SpawnEntity("Enemy1", 1920 - 350, 400, 0)
 	SpawnEntity("Enemy1", 1920 - 150, 400, 0)

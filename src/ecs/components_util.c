@@ -143,7 +143,7 @@ void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip
     return;
   }
   Animation *animation = GetAnimation(animationName);
-
+  animator->flip = flip;
   if(animator->currentAnimation == animation)
   {
     return;
@@ -152,7 +152,6 @@ void SetAnimation(EcsWorld *world, EcsID e, const char *animationName, BOOL flip
   animator->frameCounter = 0;
   animator->currentFrame = 0;
   animator->currentAnimation = animation;
-  animator->flip = flip;
   animator->playOnce = playOnce;
 }
 

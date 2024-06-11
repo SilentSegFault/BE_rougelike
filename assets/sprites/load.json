@@ -46,5 +46,41 @@
     "shader" : "sprite",
     "texture" : "door",
     "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "bench",
+    "shader" : "sprite",
+    "texture" : "bench",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "plants",
+    "shader" : "sprite",
+    "texture" : "plants",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "bossDoor",
+    "shader" : "sprite",
+    "texture" : "bossDoor",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "char2",
+    "shader" : "sprite",
+    "texture" : "char2",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "char3",
+    "shader" : "sprite",
+    "texture" : "char3",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "char4",
+    "shader" : "sprite",
+    "texture" : "char4",
+    "colorMask" : [1.0, 1.0, 1.0]
   }
 ]}
