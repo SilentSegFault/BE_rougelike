@@ -5,6 +5,7 @@ local enemy_projectile = Entity:New({
 		collider = { width = 20, height = 20, collisionLayer = 8 },
 	},
 	timeToLive = 7,
+  speed = 400
 })
 
 function enemy_projectile:OnUpdate(deltaTime)
@@ -18,7 +19,7 @@ function enemy_projectile:OnUpdate(deltaTime)
 	local x = math.cos(rot)
 	local y = math.sin(rot)
 
-	MoveEntity(self, x * 400 * deltaTime, y * 400 * deltaTime)
+	MoveEntity(self, x * self.speed * deltaTime, y * self.speed * deltaTime)
 end
 
 function enemy_projectile:OnCollision(ent)
@@ -26,6 +27,7 @@ function enemy_projectile:OnCollision(ent)
 		DestroyEntity(self)
 	elseif ent:HasTag("player") then
 		ent.health = ent.health - 1
+    PlayerHealth = PlayerHealth - 1
 		DestroyEntity(self)
 	end
 end

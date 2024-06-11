@@ -14,7 +14,8 @@ function char1_desk:OnCollision(ent)
 		SpawnEntity("Char1Label", 1250, 500, 0)
 		local playerX, playerY = GetEntityPos(ent)
 		local holderID = SpawnEntity("WeaponHolder", playerX, playerY, 0)
-		local weaponID = SpawnEntity("Weapon", playerX + 50, playerY, 0)
+		weaponID = SpawnEntity("Weapon", playerX + 50, playerY, 0)
+    PlayerGun = "Weapon"
 		SetEntityParent(weaponID, holderID)
 		SetEntityParent(holderID, ent.id)
 

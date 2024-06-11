@@ -54,5 +54,37 @@
     "cols" : 3,
     "frameWidth" : 32,
     "frameHeight" : 32
+  },
+  {
+    "name" : "enemy3Idle",
+    "texture" : "enemy3",
+    "rows" : 1,
+    "cols" : 4,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "enemy4",
+    "texture" : "enemy4",
+    "rows" : 1,
+    "cols" : 6,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "enemy4Boom",
+    "texture" : "enemy4Boom",
+    "rows" : 1,
+    "cols" : 5,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "explosion",
+    "texture" : "explosion",
+    "rows" : 1,
+    "cols" : 6,
+    "frameWidth" : 32,
+    "frameHeight" : 32
   }
 ]}

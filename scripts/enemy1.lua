@@ -54,6 +54,7 @@ function enemy1:OnCollision(ent)
 		MoveEntity(self, -self.lastMove.x, -self.lastMove.y)
 		if self.attackTimer <= 0 then
 			ent.health = ent.health - 1
+      PlayerHealth = PlayerHealth - 1
 			self.attackTimer = self.timeToAttack
 			print(ent.health)
 		end

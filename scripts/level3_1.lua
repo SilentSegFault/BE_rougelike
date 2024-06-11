@@ -20,7 +20,7 @@ function level31:OnStart()
 	local ent = Ecs:GetEntity(playerID)
 	local playerX, playerY = GetEntityPos(ent)
 	local holderID = SpawnEntity("WeaponHolder", playerX, playerY, 0)
-	local weaponID = SpawnEntity("Weapon", playerX + 50, playerY, 0)
+	weaponID = SpawnEntity(PlayerGun, playerX + 50, playerY, 0)
 	SetEntityParent(weaponID, holderID)
 	SetEntityParent(holderID, playerID)
 

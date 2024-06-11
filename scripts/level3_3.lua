@@ -20,14 +20,14 @@ function level33:OnStart()
 	local ent = Ecs:GetEntity(playerID)
 	local playerX, playerY = GetEntityPos(ent)
 	local holderID = SpawnEntity("WeaponHolder", playerX, playerY, 0)
-	local weaponID = SpawnEntity("Weapon", playerX + 50, playerY, 0)
+	weaponID = SpawnEntity(PlayerGun, playerX + 50, playerY, 0)
 	SetEntityParent(weaponID, holderID)
 	SetEntityParent(holderID, playerID)
 
 	ent.holder = holderID
 	ent.weapon = weaponID
 
-	local doorID = SpawnEntity("Level33Door", 1920 / 2, 1080 - 60, 0)
+	local doorID = SpawnEntity("Door", 1920 / 2, 1080 - 60, 0)
 	FlipDown(Ecs:GetEntity(doorID))
 
 	SpawnEntity("Boss", 1920 / 2, 1080 / 2, 0)

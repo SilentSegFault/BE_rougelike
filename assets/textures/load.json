@@ -21,5 +21,11 @@
   {"name" : "char2", "source" : "char2.png", "alpha" : true},
   {"name" : "char3", "source" : "char3.png", "alpha" : true},
   {"name" : "char4", "source" : "char4.png", "alpha" : true},
+  {"name" : "enemy3", "source" : "enemy3.png", "alpha" : true},
+  {"name" : "shotgun", "source" : "shotgun.png", "alpha" : true},
+  {"name" : "ak47", "source" : "ak47.png", "alpha" : true},
+  {"name" : "enemy4", "source" : "enemy4.png", "alpha" : true},
+  {"name" : "enemy4Boom", "source" : "enemy4Boom.png", "alpha" : true},
+  {"name" : "explosion", "source" : "explosion.png", "alpha" : true},
   {"name" : "chest", "source" : "chest.png", "alpha" : true}
 ]}

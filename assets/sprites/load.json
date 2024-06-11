@@ -30,6 +30,18 @@
     "colorMask" : [1.0, 1.0, 1.0]
   },
   {
+    "name" : "shotgun",
+    "shader" : "sprite",
+    "texture" : "shotgun",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "ak47",
+    "shader" : "sprite",
+    "texture" : "ak47",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
     "name" : "projectile",
     "shader" : "sprite",
     "texture" : "projectile",

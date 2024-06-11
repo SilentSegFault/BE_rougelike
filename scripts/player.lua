@@ -12,6 +12,7 @@ local player = Entity:New({
 
 function player:OnCreate()
 	self.lastMove = { x = 0, y = 0 }
+  self.health = PlayerHealth
 end
 
 
@@ -70,12 +71,6 @@ function player:OnUpdate(deltaTime)
 		else
 			PlayAnimation(self,"playerIdle",1)
 		end
-	end
-
-	if self.weapon ~= nil and KeyDown("mouse_left") then
-		local x, y = GetEntityPos(Ecs:GetEntity(self.weapon))
-		local rot = GetEntityRotation(Ecs:GetEntity(self.weapon))
-		SpawnEntity("PlayerBullet", x, y, rot)
 	end
 
 	if moveVec.x == 0 and moveVec.y == 0 then

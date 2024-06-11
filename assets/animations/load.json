@@ -35,6 +35,34 @@
     "speed" : 8
   },
   {
+    "name" : "enemy3Idle",
+    "spritesheet" : "enemy3Idle",
+    "row" : 0,
+    "frames" : 4,
+    "speed" : 8
+  },
+  {
+    "name" : "enemy4Walk",
+    "spritesheet" : "enemy4",
+    "row" : 0,
+    "frames" : 6,
+    "speed" : 6
+  },
+  {
+    "name" : "enemy4Boom",
+    "spritesheet" : "enemy4Boom",
+    "row" : 0,
+    "frames" : 5,
+    "speed" : 8
+  },
+  {
+    "name" : "explosion",
+    "spritesheet" : "explosion",
+    "row" : 0,
+    "frames" : 6,
+    "speed" : 4
+  },
+  {
     "name" : "boss",
     "spritesheet" : "boss",
     "row" : 0,
