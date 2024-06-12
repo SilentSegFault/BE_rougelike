@@ -8,6 +8,7 @@ local level1 = Entity:New({
 function level1:OnCreate()
 	CanAccesLevel2 = false
 	EntitiesToKill = 0
+	RoomsToClear = 0
 
   PlayerHealth = 5
   PlayerGun = nil
@@ -24,7 +25,7 @@ function level1:OnStart()
 	playerID = SpawnEntity("Player", 1300, 300, 0)
 	for i = 1, 4, 1 do 
 	 for j = 1, 3 , 1 do 
-		--SpawnEntity("Desk", i * 300, 200 + j * 200, 0)
+		SpawnEntity("Desk", i * 300, 200 + j * 200, 0)
 	 end
 	end
 
