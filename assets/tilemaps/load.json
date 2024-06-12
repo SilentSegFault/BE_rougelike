@@ -7,13 +7,10 @@
   {"name" : "level31", "source" : "level3_1.json"},
   {"name" : "level33", "source" : "level3_3.json"},
   {"name" : "level41", "source" : "level4_1.json"},
-<<<<<<< HEAD
   {"name" : "level42", "source" : "level4_2.json"},
   {"name" : "floor3Level11", "source" : "floor3_level11.json"},
   {"name" : "floor3Level12", "source" : "floor3_level12.json"},
-  {"name" : "floor3Room", "source" : "floor3_room.json"}
-=======
+  {"name" : "floor3Room", "source" : "floor3_room.json"},
   {"name" : "level43", "source" : "level4_3.json"},
   {"name" : "level42", "source" : "level4_2.json"}
->>>>>>> 3fa6f8af87f3923696646e822ad63233d4e54fa4
 ]}
