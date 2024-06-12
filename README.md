@@ -34,6 +34,7 @@ or
 ```console
     cmake .. -G"MinGW Makefiles"
 ```
+and finally
 ```console
     cmake --build .
 ```
