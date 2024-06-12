@@ -27,5 +27,7 @@
   {"name" : "enemy4", "source" : "enemy4.png", "alpha" : true},
   {"name" : "enemy4Boom", "source" : "enemy4Boom.png", "alpha" : true},
   {"name" : "explosion", "source" : "explosion.png", "alpha" : true},
+  {"name" : "lvl2", "source" : "lvl2.png", "alpha" : true},
+  {"name" : "lvl3", "source" : "lvl3.png", "alpha" : true},
   {"name" : "chest", "source" : "chest.png", "alpha" : true}
 ]}

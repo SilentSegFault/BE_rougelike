@@ -15,7 +15,7 @@ function level1_door:OnCollision(ent)
 		LastPlayerPos = { x = px, y = 1080 - 180 }
 
 		if math.abs(y - py) < 30 then
-			LoadScene("level21")
+			LoadScene("level1f2")
 		end
 	end
 end

@@ -1,5 +1,6 @@
 package.path = package.path .. ";../../scripts/?.lua"
 
+
 Entity = require("entity")
 Ecs = require("ecs")
 Player = require("player")
@@ -59,3 +60,8 @@ Shotgun = require("Shotgun")
 Ak47 = require("Ak47")
 Enemy4 = require("enemy4")
 Explosion = require("explosion")
+
+--Floor2 
+Level1Floor2 = require("floor2/level1")
+Level2Floor2 = require("floor2/level2")
+Level1Florr2Corridor = require("floor2/level1corridor")

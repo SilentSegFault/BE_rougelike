@@ -28,16 +28,7 @@ function level1:OnStart()
 	 end
 	end
 
-  SpawnEntity("Enemy4", 400, 400, 0)
-  SpawnEntity("Enemy4", 1400, 500, 0)
-  SpawnEntity("Enemy4", 400, 600, 0)
-  SpawnEntity("Enemy4", 1400, 700, 0)
-  SpawnEntity("Enemy4", 400, 800, 0)
-  SpawnEntity("Enemy4", 1400, 800, 0)
-
-  SpawnEntity("Enemy3", 1400, 500, 0)
-  SpawnEntity("Enemy3", 1400, 700, 0)
-  SpawnEntity("Enemy3", 1400, 900, 0)
+ 
 end
 
 return level1

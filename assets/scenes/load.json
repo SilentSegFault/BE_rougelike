@@ -39,6 +39,14 @@
     {"name": "main", "type" : "Level33",
       "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
   ]},
+  {"name" : "level1f2", "entities" : [
+    {"name": "main", "type" : "Level1Floor2",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level2f2", "entities" : [
+    {"name": "main", "type" : "Level2Floor2",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
   {"name" : "EndMenu", "entities" : [
     {"name": "start_menu", "type" : "StartMenu",
       "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},

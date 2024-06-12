@@ -38,6 +38,22 @@
     "tileHeight" : 32,
     "tileCount" : 7,
     "columns" : 7
+  },
+  {
+    "name" : "room2",
+    "texture" : "lvl2",
+    "tileWidth" : 32,
+    "tileHeight" : 32,
+    "tileCount" : 7,
+    "columns" : 7
+  },
+  {
+    "name" : "room3",
+    "texture" : "lvl3",
+    "tileWidth" : 32,
+    "tileHeight" : 32,
+    "tileCount" : 7,
+    "columns" : 7
   }
 
 ]}

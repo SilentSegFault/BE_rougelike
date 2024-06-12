@@ -5,5 +5,7 @@
   {"name" : "level21", "source" : "level2_1.json"},
   {"name" : "level22", "source" : "level2_2.json"},
   {"name" : "level31", "source" : "level3_1.json"},
-  {"name" : "level33", "source" : "level3_3.json"}
+  {"name" : "level33", "source" : "level3_3.json"},
+  {"name" : "level41", "source" : "level4_1.json"},
+  {"name" : "level42", "source" : "level4_2.json"}
 ]}
