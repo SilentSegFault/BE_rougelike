@@ -12,7 +12,7 @@ You can build this project only on windows and you are required to have at least
 CMake, c compiler and build system (preferably ninja or mingw-make)
 You can download everything using [MSYS2](https://www.msys2.org/)  
 You can read this article to learn [how to use CMake with MSYS2](https://www.msys2.org/docs/cmake/)  
-Make sure that you added your enviroment bin directory to path! [How to add folder to path](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho)
+Make sure that you added your enviroment bin directory to path! [How to add directory to path](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho)
 
 ### Downloading
 First you have to download this project or clone it using git. 
