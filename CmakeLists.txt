@@ -6,7 +6,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 find_package(OpenGL REQUIRED)
-find_library(Freetype_LIB freetype "C:/msys64/ucrt64/lib")
+find_library(Freetype_LIB freetype "${CMAKE_SOURCE_DIR}/external/freetype/lib")
 find_library(lua_LIB lua "${CMAKE_SOURCE_DIR}/external/lua/lib")
 
 add_subdirectory(external/glad)
@@ -16,12 +16,11 @@ include_directories(${OPENGL_INCLUDE_DIR}
                     external/glad/include
                     external/cglm/include
                     external/stb/include
-                    external/cute_headers/include
                     external/pico_headers/include
                     external/cJSON/include
                     external/lua/include
-                    C:/msys64/ucrt64/include
-                    C:/msys64/ucrt64/include/freetype2
+                    external/freetype/include
+                    external/freetype/include/freetype2
                     )
 
 set(SOURCES src/app.c
