@@ -14,7 +14,7 @@ You can download everything using [MSYS2](https://www.msys2.org/)
 Make sure that you added your enviroment bin directory to path!
 
 ### Downloading
-Firs you have to download this project or clone it using git. 
+First you have to download this project or clone it using git. 
 To clone it open cmd in selected directory and use (dot in the end is important).
 ```console
     git clone https://github.com/NewPopeButDarker/BE_rougelike.git .
@@ -26,22 +26,15 @@ To create build open project directory in cmd create build directory and enter i
     mkdir build && cd build
 ```
 
-Now use cmake to build this project 
+Now use cmake to build this project (preferably with ninja or mingw make)
 ```console
-    cmake ..
+    cmake .. -G"Ninja"
+```
+or
+```console
+    cmake .. -G"MinGW Makefiles"
+```
+```console
     cmake --build .
 ```
-/bin directory should be created with your game in here.
-
-## Documentation
-
-### Requirements
-To create documentation you have to install [doxygen](https://www.doxygen.nl/index.html) and add it's directory to path 
-
-### Creating docs
-If you have doxygen installed open project folder in cmd (make sure its the same directory where Doxyfile is located) and run doxygen generator: 
-```console
-    doxygen Doxyfile
-```
-
-/docs directory should be created with subdirectories for each format you have installed 
+/bin directory should be created inside /build with your game in here.
