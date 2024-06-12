@@ -24,9 +24,6 @@
 #define STB_DS_IMPLEMENTATION
 #include "stb/stb_ds.h"
 
-#define CUTE_C2_IMPLEMENTATION
-#include "cute_headers/cute_c2.h"
-
 #include <time.h>
 
 void ExitHandler(void);
