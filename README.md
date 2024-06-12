@@ -9,9 +9,10 @@ Biomedical Hunter its rougelike game with rpg accents.
 
 ### Requirements
 You can build this project only on windows and you are required to have at least these three things 
-CMake, c compiler and build system 
-You can download everything using [MSYS2](https://www.msys2.org/) 
-Make sure that you added your enviroment bin directory to path!
+CMake, c compiler and build system (preferably ninja or mingw-make)
+You can download everything using [MSYS2](https://www.msys2.org/)  
+You can read this article to learn [how to use CMake with MSYS2](https://www.msys2.org/docs/cmake/)  
+Make sure that you added your enviroment bin directory to path! [How to add folder to path](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho)
 
 ### Downloading
 First you have to download this project or clone it using git. 
@@ -26,7 +27,7 @@ To create build open project directory in cmd create build directory and enter i
     mkdir build && cd build
 ```
 
-Now use cmake to build this project (preferably with ninja or mingw make)
+Now use cmake to build this project (preferably with ninja or mingw-make)
 ```console
     cmake .. -G"Ninja"
 ```
