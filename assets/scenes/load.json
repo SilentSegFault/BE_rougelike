@@ -56,5 +56,25 @@
       "position" : {"x" : 740, "y" : 524}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null},
     {"name": "lost_label", "type" : "LostLabel",
       "position" : {"x" : 680, "y" : 164}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level11f3", "entities" : [
+    {"name": "main", "type" : "Level11Floor3",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level12f3", "entities" : [
+    {"name": "main", "type" : "Level12Floor3",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level21f3", "entities" : [
+    {"name": "main", "type" : "Level21Floor3",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level22f3", "entities" : [
+    {"name": "main", "type" : "Level22Floor3",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
+  ]},
+  {"name" : "level23f3", "entities" : [
+    {"name": "main", "type" : "Level23Floor3",
+      "position" : {"x" : 0, "y" : 0}, "scale" : {"x" : 1, "y" : 1}, "rotation" : 0, "parent" : null}
   ]}
 ]}

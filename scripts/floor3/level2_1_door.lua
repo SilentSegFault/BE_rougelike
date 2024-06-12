@@ -1,4 +1,4 @@
-local level1_door = Entity:New({
+local level2_1_door = Entity:New({
 	components = {
 		transform = { size = { width = 120, height = 60 } },
 		collider = { width = 120, height = 60, collisionLayer = 10 },
@@ -7,17 +7,17 @@ local level1_door = Entity:New({
 	tags = { "door" },
 })
 
-function level1_door:OnCollision(ent)
-	if ent:HasTag("player") and CanAccesLevel2 then
+function level2_1_door:OnCollision(ent)
+	if ent:HasTag("player") and CanLeaveLevel2_1 then
 		local _, y = GetEntityPos(self)
 		local px, py = GetEntityPos(ent)
 
 		LastPlayerPos = { x = px, y = 1080 - 180 }
 
-		if math.abs(y - py) < 30 then
-			LoadScene("level21")
+		if math.abs(y - py) < 50 then
+			LoadScene("level11f3")
 		end
 	end
 end
 
-return level1_door
+return level2_1_door

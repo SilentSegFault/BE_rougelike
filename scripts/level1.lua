@@ -8,6 +8,7 @@ local level1 = Entity:New({
 function level1:OnCreate()
 	CanAccesLevel2 = false
 	EntitiesToKill = 0
+  RoomsToClear = 0
 
   PlayerHealth = 5
   PlayerGun = nil
