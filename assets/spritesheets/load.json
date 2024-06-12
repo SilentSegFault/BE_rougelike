@@ -1,0 +1,90 @@
+{"load" : [
+  {
+    "name" : "default",
+    "texture" : "default",
+    "rows" : 1,
+    "cols" : 1,
+    "frameWidth" : 200,
+    "frameHeight" : 200
+  },
+  {
+    "name" : "player",
+    "texture" : "player",
+    "rows" : 1,
+    "cols" : 2,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "char1",
+    "texture" : "char1",
+    "rows" : 1,
+    "cols" : 2,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "enemy1",
+    "texture" : "enemy1",
+    "rows" : 1,
+    "cols" : 4,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "boss",
+    "texture" : "boss",
+    "rows" : 1,
+    "cols" : 4,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "bossSummon",
+    "texture" : "bossSummon",
+    "rows" : 1,
+    "cols" : 4,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "chest",
+    "texture" : "chest",
+    "rows" : 1,
+    "cols" : 3,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "enemy3Idle",
+    "texture" : "enemy3",
+    "rows" : 1,
+    "cols" : 4,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "enemy4",
+    "texture" : "enemy4",
+    "rows" : 1,
+    "cols" : 6,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "enemy4Boom",
+    "texture" : "enemy4Boom",
+    "rows" : 1,
+    "cols" : 5,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  },
+  {
+    "name" : "explosion",
+    "texture" : "explosion",
+    "rows" : 1,
+    "cols" : 6,
+    "frameWidth" : 32,
+    "frameHeight" : 32
+  }
+]}

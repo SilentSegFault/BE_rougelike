@@ -1,18 +1,15 @@
 #include "shader.h"
 #include "glad/glad.h"
 #include <string.h>
-#include "../utility/error.h"
-#include "pico_headers/pico_log.h"
+#include "../logger/logger.h"
 
-static long lLastUsedShader = -1;
 void UseShader(Shader shader)
 {
   glUseProgram(shader);
-  lLastUsedShader = shader;
 }
 
 
-void CheckCompileError(unsigned int object, char *type)
+int CompileErrorOccured(unsigned int object, char *type)
 {
   int success;
   char infoLog[1024];
@@ -24,8 +21,8 @@ void CheckCompileError(unsigned int object, char *type)
     if(!success)
     {
       glGetProgramInfoLog(object, 1024, NULL, infoLog);
-      log_fatal("Error while linking program: %s\nmessage: %s.", type, infoLog);
-      FATAL_ERROR();
+      LogError("Error while linking program: %s\nmessage: %s.", type, infoLog);
+      return 1;
     }
   }
   else
@@ -35,42 +32,46 @@ void CheckCompileError(unsigned int object, char *type)
     if(!success)
     {
       glGetShaderInfoLog(object, 1024, NULL, infoLog);
-      log_fatal("Error while compiling shader: %s\nmessage: %s.",type, infoLog);
-      FATAL_ERROR();
+      LogError("Error while compiling shader: %s\nmessage: %s.",type, infoLog);
+      return 1;
     }
   }
+
+  return 0;
 }
 
-Shader CompileShader(const char *vertexSource, const char *fragmentSource, const char *geometrySource)
+int CompileShader(const char *vertexSource, const char *fragmentSource, const char *geometrySource, Shader *compiledShader)
 {
-  log_info("Compiling and linking shaders.");
   unsigned int sVertex, sFragment, sGeometry;
 
   //Vertex shader
-  log_debug("Compiling vertex shader.");
   sVertex = glCreateShader(GL_VERTEX_SHADER);
   glShaderSource(sVertex, 1, &vertexSource, NULL);
   glCompileShader(sVertex);
-  CheckCompileError(sVertex, "VERTEX");
-  log_debug("Vertex shader compiled.");
+  if(CompileErrorOccured(sVertex, "VERTEX"))
+  {
+    return 0;
+  }
 
   //Fragment shader
-  log_debug("Compiling fragment shader.");
   sFragment = glCreateShader(GL_FRAGMENT_SHADER);
   glShaderSource(sFragment, 1, &fragmentSource, NULL);
   glCompileShader(sFragment);
-  CheckCompileError(sFragment, "FRAGMENT");
-  log_debug("Fragment shader compiled.");
+  if(CompileErrorOccured(sFragment, "FRAGMENT"))
+  {
+    return 0;
+  }
 
   //Geometry shader
   if(geometrySource != NULL)
   {
-    log_debug("Compiling geometry shader.");
     sGeometry = glCreateShader(GL_GEOMETRY_SHADER);
     glShaderSource(sGeometry, 1, &geometrySource, NULL);
     glCompileShader(sGeometry);
-    CheckCompileError(sGeometry, "GEOMETRY");
-    log_debug("Geometry shader compiled.");
+    if(CompileErrorOccured(sGeometry, "GEOMETRY"))
+    {
+      return 0;
+    }
   }
 
   //Shader program
@@ -80,78 +81,89 @@ Shader CompileShader(const char *vertexSource, const char *fragmentSource, const
   if(geometrySource != NULL)
     glAttachShader(shader, sGeometry);
 
-  log_debug("Linking shader program.");
   glLinkProgram(shader);
-  CheckCompileError(shader, "PROGRAM");
-  log_debug("Shader program linked.");
+  if(CompileErrorOccured(shader, "PROGRAM"))
+  {
+    return 0;
+  }
 
   glDeleteShader(sVertex);
   glDeleteShader(sFragment);
   if(geometrySource != NULL)
     glDeleteShader(sGeometry);
 
-  log_info("Shaders compiled and linked.");
-  return shader;
+  *compiledShader = shader;
+  return 1;
 }
 
-void _UseShaderIfNeeded(Shader shader)
+void ShaderSetFloat(Shader shader, const char *name, float value, BOOL useShader)
 {
-  if(lLastUsedShader != shader)
-  {
+  if(useShader)
     UseShader(shader);
-  }
-}
 
-void ShaderSetFloat(Shader shader, const char *name, float value)
-{
-  _UseShaderIfNeeded(shader);
   glUniform1f(glGetUniformLocation(shader, name), value);
 }
 
-void ShaderSetInteger(Shader shader, const char *name, int value)
+void ShaderSetInteger(Shader shader, const char *name, int value, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform1i(glGetUniformLocation(shader, name), value);
 }
 
-void ShaderSetVector2f(Shader shader, const char *name, float x, float y)
+void ShaderSetVector2f(Shader shader, const char *name, float x, float y, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform2f(glGetUniformLocation(shader, name), x, y);
 }
 
-void ShaderSetVector3f(Shader shader, const char *name, float x, float y, float z)
+void ShaderSetVector3f(Shader shader, const char *name, float x, float y, float z, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform3f(glGetUniformLocation(shader, name), x, y, z);
 }
 
-void ShaderSetVector4f(Shader shader, const char *name, float x, float y, float z, float w)
+void ShaderSetVector4f(Shader shader, const char *name, float x, float y, float z, float w, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform4f(glGetUniformLocation(shader, name), x, y, z, w);
 }
 
-void ShaderSetVector2(Shader shader, const char *name, vec2 value)
+void ShaderSetVector2(Shader shader, const char *name, vec2 value, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform2fv(glGetUniformLocation(shader, name), 1, value);
 }
 
-void ShaderSetVector3(Shader shader, const char *name, vec3 value)
+void ShaderSetVector3(Shader shader, const char *name, vec3 value, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform3fv(glGetUniformLocation(shader, name), 1, value);
 }
 
-void ShaderSetVector4(Shader shader, const char *name, float *value)
+void ShaderSetVector4(Shader shader, const char *name, float *value, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniform4fv(glGetUniformLocation(shader, name), 1, value);
 }
 
-void ShaderSetMat4(Shader shader, const char *name, mat4 value)
+void ShaderSetMat4(Shader shader, const char *name, mat4 value, BOOL useShader)
 {
-  _UseShaderIfNeeded(shader);
+  if(useShader)
+    UseShader(shader);
+
   glUniformMatrix4fv(glGetUniformLocation(shader, name), 1, GL_FALSE, value[0]);
 }

@@ -1,0 +1,98 @@
+{"load" : [
+  {
+    "name" : "default",
+    "shader" : "sprite",
+    "texture" : "default",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "btn_background1",
+    "shader" : "sprite",
+    "texture" : "btn_background1",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "startmenu_background",
+    "shader" : "sprite",
+    "texture" : "startmenu_background",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "desk",
+    "shader" : "sprite",
+    "texture" : "desk",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "weapon",
+    "shader" : "sprite",
+    "texture" : "weapon",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "shotgun",
+    "shader" : "sprite",
+    "texture" : "shotgun",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "ak47",
+    "shader" : "sprite",
+    "texture" : "ak47",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "projectile",
+    "shader" : "sprite",
+    "texture" : "projectile",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "enemyProjectile",
+    "shader" : "sprite",
+    "texture" : "enemyProjectile",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "door",
+    "shader" : "sprite",
+    "texture" : "door",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "bench",
+    "shader" : "sprite",
+    "texture" : "bench",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "plants",
+    "shader" : "sprite",
+    "texture" : "plants",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "bossDoor",
+    "shader" : "sprite",
+    "texture" : "bossDoor",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "char2",
+    "shader" : "sprite",
+    "texture" : "char2",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "char3",
+    "shader" : "sprite",
+    "texture" : "char3",
+    "colorMask" : [1.0, 1.0, 1.0]
+  },
+  {
+    "name" : "char4",
+    "shader" : "sprite",
+    "texture" : "char4",
+    "colorMask" : [1.0, 1.0, 1.0]
+  }
+]}

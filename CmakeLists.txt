@@ -6,26 +6,70 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 find_package(OpenGL REQUIRED)
+find_library(Freetype_LIB freetype "C:/msys64/ucrt64/lib")
+find_library(lua_LIB lua "${CMAKE_SOURCE_DIR}/external/lua/lib")
 
 add_subdirectory(external/glad)
+add_subdirectory(external/cJSON)
 
 include_directories(${OPENGL_INCLUDE_DIR}
                     external/glad/include
                     external/cglm/include
                     external/stb/include
-                    external/pico_headers/include)
+                    external/cute_headers/include
+                    external/pico_headers/include
+                    external/cJSON/include
+                    external/lua/include
+                    C:/msys64/ucrt64/include
+                    C:/msys64/ucrt64/include/freetype2
+                    )
 
 set(SOURCES src/app.c
             src/game/game.c
-            src/window/window.c
+            src/window/win32_helper.c
+            src/window/opengl_helper.c
             src/shader/shader.c 
             src/texture/texture.c 
+            src/sprite/sprite.c
+            src/tileset/tileset.c
+            src/tilemap/tilemap.c
             src/utility/rand.c 
             src/utility/error.c
+            src/utility/ut_math.c
+            src/utility/loadFileSource.c
             src/rendering/rendering_sprites.c 
-            src/resource_manager/resource_manager.c)
+            src/rendering/rendering_text.c 
+            src/rendering/rendering_tilemaps.c
+            src/rendering/rendering_debug.c
+            src/resource_management/assets_library.c
+            src/resource_management/assets_loader.c
+            src/resource_management/fonts_management.c
+            src/resource_management/shader_management.c
+            src/resource_management/texture_management.c
+            src/resource_management/sprite_management.c
+            src/resource_management/tileset_management.c
+            src/resource_management/tilemap_management.c
+            src/resource_management/scene_management.c
+            src/resource_management/spritesheet_management.c
+            src/resource_management/animation_management.c
+            src/window/window.c
+            src/utility/timer.c
+            src/logger/logger.c
+            src/character/character.c
+            src/scripting/api.c
+            src/scripting/script_engine.c
+            src/ecs/factories.c
+            src/ecs/components.c
+            src/ecs/systems.c
+            src/ecs/components_util.c
+            src/ecs/ecs.c
+            src/scene/scene.c
+            src/animation/animation.c
+            src/spritesheet/spritesheet.c
+            )
 
 
 add_executable(game WIN32 ${SOURCES})
+set_property(TARGET game PROPERTY C_STANDARD 99)
 
-target_link_libraries(game ${OPENGL_gl_LIBRARY} glad)
+target_link_libraries(game ${OPENGL_gl_LIBRARY} ${lua_LIB} ${Freetype_LIB} glad cJSON Ws2_32)

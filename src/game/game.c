@@ -1,52 +1,111 @@
 #include "game.h"
 #include "../window/window.h"
-#include "../resource_manager/resource_manager.h"
-#include "../rendering/rendering_sprites.h"
-#include "glad/glad.h"
-#include "pico_headers/pico_log.h"
-#include <minwindef.h>
-#include "cglm/cglm.h"
+#include "../window/win32_helper.h"
+#include "stb/stb_ds.h"
+#include "../ecs/systems.h"
+#include "../resource_management/assets_library.h"
+#include "../logger/logger.h"
+#include "../ecs/ecs.h"
+#include "../scripting/script_engine.h"
+#include "../rendering/rendering_text.h"
+#include "../ecs/factories.h"
 
-Sprite testSprite;
+Game currentGame = {0};
+int pause = 0;
+int drawDebug = 0;
+const char *sceneToLoad = NULL;
 
 void InitGame(void)
 {
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glViewport(0, 0, windowWidth, windowHeight);
-  InitSpriteRenderer();
-
-  testSprite.shader = LoadShader("../../assets/shaders/default.vert", "../../assets/shaders/default.frag", NULL, "default");
-  testSprite.texture = LoadTexture("../../assets/textures/smiley-face-icon.png", TRUE, "face");
-  testSprite.colorMask[0] = 1.0f;
-  testSprite.colorMask[1] = 1.0f;
-  testSprite.colorMask[2] = 1.0f;
+  currentGame.currentScene = NULL;
+  LoadScene("StartMenu");
 }
 
 void Update(double deltaTime)
 {
+  currentGame.gameTime += deltaTime;
+  currentGame.frameCount += 1;
 
+  if(sceneToLoad != NULL)
+  {
+    LoadScene(sceneToLoad);
+    sceneToLoad = NULL;
+  }
+
+  if(KeyDown(KEY_F11))
+    ToggleFullScreen();
+
+  if(KeyDown(KEY_F1))
+    drawDebug = !drawDebug;
+
+  if(KeyDown(KEY_ESC))
+    pause = !pause;
+
+  if(pause)
+    return;
+
+  Scene *scene = GetCurrentScene();
+  if(scene == NULL)
+    return;
+  EcsUpdateSystem(scene->world, StartSystem, 0);
+  EcsUpdateSystem(scene->world, UpdateSystem, deltaTime);
+  EcsUpdateSystem(scene->world, AnimationSystem, 0);
+  EcsUpdateSystem(scene->world, CollisionSystem, 0);
+  EcsUpdateSystem(scene->world, DestroySystem, 0);
 }
 
-void Render(HDC hdc)
+void Render(void)
 {
-  glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT);
+  UpdateProjectionMatrix();
 
+  Scene *scene = GetCurrentScene();
+  if(scene == NULL)
+    return;
 
-  mat4 projection;
-  glm_ortho(0, windowWidth, windowHeight, 0, -1.0f, 1.0f, projection);
+  EcsUpdateSystem(scene->world, TilemapRenderSystem, 0);
+  EcsUpdateSystem(scene->world, SpriteRenderSystem, 0);
+  EcsUpdateSystem(scene->world, AnimationRenderSystem, 0);
+  EcsUpdateSystem(scene->world, TextRenderSystem, 0);
+  if(drawDebug)
+    EcsUpdateSystem(GetCurrentScene()->world, RenderDebugColliderSystem, 0);
 
-  ShaderSetMat4(testSprite.shader, "projection", projection);
-
-  DrawSprite(testSprite, (vec2){10.0f, 10.0f}, (vec2){100.0f, 100.0f}, 0);
-
-  SwapBuffers(hdc);
+  if(pause)
+    RenderText(GetShader("text"),
+               GetProjectionMatrix(),
+               0,
+               GetFont("arial"),
+               "PAUSE",
+               (vec2) {GetGameWindowWidth() * 0.25f, GetGameWindowHeight() * 0.5f},
+               3,
+               (vec3){1.0f, 0.9f, 0.2f});
 }
 
-void DisposeGame()
+void DisposeGame(void)
 {
-  log_info("Clearing resources.");
-  DisposeSpriteRenderer();
-  log_info("Resources cleared.");
+  DisposeScene(GetCurrentScene());
 }
+
+void LoadScene(const char *sceneName)
+{
+  LogInfo("Loading scene %s", sceneName);
+  Scene *scene = GetScene(sceneName);
+  LoadLuaScene(sceneName);
+  InitScene(scene);
+  currentGame.currentScene = scene;
+}
+
+void QueueLoadScene(const char *sceneName)
+{
+  sceneToLoad = sceneName;
+}
+
+Scene* GetCurrentScene()
+{
+  return currentGame.currentScene;
+}
+
+void UnloadScene()
+{
+}
+
+

@@ -1,16 +1,26 @@
-///@file
 #ifndef GAME_H
 #define GAME_H
 
 #include <windows.h>
+#include "../scene/scene.h"
 
-/// @brief Initializes required elements for game to run.
+typedef struct
+{
+  unsigned long long gameTime;
+  unsigned long long frameCount;
+  Scene *currentScene;
+} Game;
+
+extern Game currentGame;
+
 void InitGame(void);
-/// @brief Updates one physics/systems step.
 void Update(double deltaTime);
-/// @brief Renders current frame.
-void Render(HDC hdc);
-/// @brief handles disposing resources allocated in InitGame(void).
+void Render(void);
 void DisposeGame(void);
+
+void LoadScene(const char *sceneName);
+void QueueLoadScene(const char *sceneName);
+Scene* GetCurrentScene();
+void UnloadScene();
 
 #endif

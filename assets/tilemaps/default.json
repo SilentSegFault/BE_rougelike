@@ -1,0 +1,11 @@
+{"tilemap" : {
+  "width" : 2,
+  "height" : 2,
+  "mapLayers" : [
+    {
+      "layer" : -1,
+      "tileset" : "default",
+      "tilesData" : [0, 0,
+                     0, 0]
+    }]
+}}

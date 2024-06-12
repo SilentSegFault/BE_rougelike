@@ -1,7 +1,7 @@
 #include "texture.h"
 #include "glad/glad.h"
 
-Texture2D GenerateTexture(unsigned char *imgData, Texture2DConfig *config)
+int GenerateTexture(unsigned char *imgData, Texture2DConfig *config, Texture2D *generatedTexture)
 {
   Texture2D texture;
   glGenTextures(1, &texture);
@@ -17,7 +17,9 @@ Texture2D GenerateTexture(unsigned char *imgData, Texture2DConfig *config)
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  return texture;
+  *generatedTexture = texture;
+
+  return 1;
 }
 
 void BindTexture(Texture2D texture)

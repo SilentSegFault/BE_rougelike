@@ -1,282 +1,105 @@
 #include "window.h"
-#include "glad/glad.h"
-#include <Windows.h>
-#include "pico_headers/pico_log.h"
-#include "../utility/error.h"
+#include "win32_helper.h"
+#include "opengl_helper.h"
+#include "cglm/cglm.h"
+#include <windows.h>
 
-unsigned int windowWidth, windowHeight;
-WindowSizing *windowSizingCallback = NULL;
-wglCreateContextAttribsARB_t *wglCreateContextAttribsARB;
-wglChoosePixelFormatARB_t *wglChoosePixelFormatARB;
+static Window gameWindow;
 
-LRESULT CALLBACK WndProc(HWND hwnd, unsigned int msg, WPARAM wParam, LPARAM lParam)
+void InitGameWindow(const char *title, int width, int height, BOOL resizable)
 {
-  switch (msg)
-  {
-    case WM_CREATE:
-      break;
+  gameWindow.hwnd = CreateMainWindow(title, width, height);
+  gameWindow.hdc = GetDC(gameWindow.hwnd);
+  gameWindow.hglrc = InitOpenGLContext(gameWindow.hdc);
+  gameWindow.width = width;
+  gameWindow.height = height;
+  gameWindow.shouldClose = FALSE;
+  gameWindow.prevPlacement.length = sizeof(WINDOWPLACEMENT);
 
-    case WM_CLOSE:
-      log_trace("Close message received.");
-      DestroyWindow(hwnd);
-      break;
-
-    case WM_DESTROY:
-      log_trace("Destroy message received.");
-      PostQuitMessage(0);
-      break;
-
-
-    case WM_SIZE:
-    case WM_SIZING:
-      {
-        log_trace("Sizing message recived.");
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-        windowWidth = rc.right - rc.left;
-        windowHeight = rc.bottom - rc.top;
-
-        if(windowSizingCallback != NULL)
-          windowSizingCallback(hwnd, windowWidth, windowHeight);
-      }
-      break;
-
-    default:
-      return DefWindowProc(hwnd, msg, wParam, lParam);
-  }
-  return 0;
+  ShowWindow(gameWindow.hwnd, SW_SHOW);
+  UpdateWindow(gameWindow.hwnd);
 }
 
-void* GetAnyGLFuncAddress(const char *name)
+int GetGameWindowWidth()
 {
-  void *p = wglGetProcAddress(name);
-
-  if((p == NULL) || (p == (void*)0x1) || (p == (void*)0x2) || (p == (void*)0x3) || (p == (void*)-1))
-  {
-    HMODULE hModule = LoadLibrary("opengl32.dll");
-    p = GetProcAddress(hModule, name);
-  }
-
-  return p;
+  return gameWindow.width;
 }
 
-HWND CreateMainWindow(const char *title, int width, int height)
+int GetGameWindowHeight()
 {
-  log_info("Creating main window.");
-  WNDCLASSEX wc;
-
-  wc.cbSize        = sizeof(wc);
-  wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-  wc.lpfnWndProc   = WndProc;
-  wc.cbClsExtra    = 0;
-  wc.cbWndExtra    = 0;
-  wc.hInstance     = GetModuleHandle(NULL);
-  wc.hIcon         = LoadIcon(NULL, IDI_APPLICATION);
-  wc.hCursor       = LoadCursor(NULL, IDC_ARROW);
-  wc.hbrBackground = NULL;
-  wc.lpszMenuName  = NULL;
-  wc.lpszClassName = "MaindWndClass";
-  wc.hIconSm       = LoadIcon(NULL, IDI_APPLICATION);
-
-  if(!RegisterClassEx(&wc))
-  {
-    log_fatal("Failed to initialize main window class.");
-    FATAL_ERROR();
-  }
-
-  RECT rc;
-  SetRect(&rc, 0, 0, width, height);
-  AdjustWindowRectEx(&rc, WS_OVERLAPPEDWINDOW, FALSE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-  windowWidth  = rc.right  - rc.left;
-  windowHeight = rc.bottom - rc.top;
-  
-
-  HWND hwnd = CreateWindowEx(WS_EX_APPWINDOW | WS_EX_TOPMOST, wc.lpszClassName, title, WS_OVERLAPPEDWINDOW,
-                             CW_USEDEFAULT, CW_USEDEFAULT, windowWidth, windowHeight,
-                             NULL, NULL, GetModuleHandle(NULL), NULL);
-
-  if(hwnd == NULL)
-  {
-    log_fatal("Failed to create main window.");
-    FATAL_ERROR();
-  }
-
-  log_info("Main window created.");
-  return hwnd;
+  return gameWindow.height;
 }
 
-void _InitGLContextExtensions(void)
+float GetMouseX()
 {
-  log_debug("Initializing openGL extension required for creating openGL context.");
-  WNDCLASS wc = {0};
-  wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-  wc.lpfnWndProc = DefWindowProc;
-  wc.hInstance = GetModuleHandle(NULL);
-  wc.lpszClassName = "DummyWndClass";
-
-  if(!RegisterClass(&wc))
-  {
-    log_fatal("Failed to initialize dummy window class.");
-    FATAL_ERROR();
-  }
-
-  HWND hDummyWindow = CreateWindow(wc.lpszClassName, NULL, 0,
-                                   0, 0, 0, 0,
-                                   NULL, NULL, wc.hInstance, NULL);
-
-  if(hDummyWindow == NULL)
-  {
-    log_fatal("Failed to create dummy window.");
-    FATAL_ERROR();
-  }
-
-  HDC hDummyDC = GetDC(hDummyWindow);
-
-  PIXELFORMATDESCRIPTOR pfd;
- 
-  pfd.nSize        = sizeof(pfd);
-  pfd.nVersion     = 1;
-  pfd.iPixelType   = PFD_TYPE_RGBA;
-  pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-  pfd.cColorBits   = 32;
-  pfd.cAlphaBits   = 8;
-  pfd.iLayerType   = PFD_MAIN_PLANE;
-  pfd.cDepthBits   = 24;
-  pfd.cStencilBits = 8;
-
-  int pixelFormat = ChoosePixelFormat(hDummyDC, &pfd);
-  if(!pixelFormat)
-  {
-    log_fatal("Failed to initialize dummy pixel format.");
-    FATAL_ERROR();
-  }
-
-  if(!SetPixelFormat(hDummyDC, pixelFormat, &pfd))
-  {
-    log_fatal("Failed to set dummy pixel format.");
-    FATAL_ERROR();
-  }
-
-  HGLRC hDummyRC = wglCreateContext(hDummyDC);
-  if(!hDummyRC)
-  {
-    log_fatal("Failed to create dummy rendering context.");
-    FATAL_ERROR();
-  }
-
-  if(!wglMakeCurrent(hDummyDC, hDummyRC))
-  {
-    log_fatal("Failed setting current dummy rendering context.");
-    FATAL_ERROR();
-  }
-
-  wglCreateContextAttribsARB = GetAnyGLFuncAddress("wglCreateContextAttribsARB");
-  wglChoosePixelFormatARB = GetAnyGLFuncAddress("wglChoosePixelFormatARB");
-
-  if(!wglCreateContextAttribsARB || ! wglChoosePixelFormatARB)
-  {
-    log_fatal("Failed loading functions required for setting openGL context.");
-    FATAL_ERROR();
-  }
-
-  wglMakeCurrent(hDummyDC, 0);
-  wglDeleteContext(hDummyRC);
-  ReleaseDC(hDummyWindow, hDummyDC);
-  DestroyWindow(hDummyWindow);
-
-  log_debug("openGL extensions required for creating context initialized.");
+  float ratio = (float)mouseX / gameWindow.width;
+  return ratio * 1920;
 }
 
-HGLRC InitOpenGLContext(HDC hdc)
+float GetMouseY()
 {
-  log_info("Initializing openGL context.");
-  _InitGLContextExtensions();
-
-
-  int pixelFormatAttribs[] =
-    {
-      WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-      WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-      WGL_DOUBLE_BUFFER_ARB,  GL_TRUE,
-      WGL_ACCELERATION_ARB,   WGL_FULL_ACCELERATION_ARB,
-      WGL_PIXEL_TYPE_ARB,     WGL_TYPE_RGBA_ARB,
-      WGL_COLOR_BITS_ARB,     32,
-      WGL_DEPTH_BITS_ARB,     24,
-      WGL_STENCIL_BITS_ARB,   8,
-      0
-    };
-
-  int iPixelFormat;
-  unsigned int nNumFormats;
-  wglChoosePixelFormatARB(hdc, pixelFormatAttribs, 0, 1, &iPixelFormat, &nNumFormats);
-
-  if(!nNumFormats)
-  {
-    log_fatal("Failed to choose pixel format.");
-    FATAL_ERROR();
-  }
-
-  PIXELFORMATDESCRIPTOR pfd;
-  DescribePixelFormat(hdc, iPixelFormat, sizeof(pfd), &pfd);
-  if(!SetPixelFormat(hdc, iPixelFormat, &pfd))
-  {
-    log_fatal("Failed to set pixel format.");
-    FATAL_ERROR();
-  }
-
-  int contextAttribs[] = 
-    {
-      WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
-      WGL_CONTEXT_MINOR_VERSION_ARB, 3,
-      WGL_CONTEXT_PROFILE_MASK_ARB,  WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-      0
-    };
-
-  HGLRC hglrc = wglCreateContextAttribsARB(hdc, 0, contextAttribs);
-  if(!hglrc)
-  {
-    log_fatal("Failed to create context attributes.");
-    FATAL_ERROR();
-  }
-
-  if(!wglMakeCurrent(hdc, hglrc))
-  {
-    log_fatal("Failed to set current rendering context.");
-    FATAL_ERROR();
-  }
-
-  log_info("OpenGL context initialized.");
-  return hglrc;
+  float ratio = (float)mouseY / gameWindow.height;
+  return ratio * 1080;
 }
 
-void LoadOpenGLFunctions(void)
+void UpdateGameWindowSize(int width, int height)
 {
-  if(!gladLoadGLLoader(GetAnyGLFuncAddress))
-  {
-    log_fatal("Failed to load openGL function pointers.");
-    FATAL_ERROR();
-  }
+  gameWindow.width = width;
+  gameWindow.height = height;
 }
 
-void PollEvents(BOOL *bWindowShouldClose)
+void SwapGameWindowBuffers()
 {
-  static MSG msg;
-  (*bWindowShouldClose) = FALSE;
-  while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-  {
-    if(msg.message == WM_QUIT)
-    {
-      (*bWindowShouldClose) = TRUE;
+  SwapBuffers(gameWindow.hdc);
+}
+
+void PollGameWindowEvents()
+{
+  PollEvents(&gameWindow.shouldClose);
+}
+
+BOOL GameWindowShouldClose()
+{
+  return gameWindow.shouldClose;
+}
+
+mat4* GetProjectionMatrix()
+{
+  return &gameWindow.projection;
+}
+
+void UpdateProjectionMatrix()
+{
+  glm_ortho(0, gameWindow.width, gameWindow.height, 0, -1.0f, 1.0f, gameWindow.projection);
+}
+
+void ToggleFullScreen()
+{
+  DWORD dwStyle = GetWindowLong(gameWindow.hwnd, GWL_STYLE);
+  if (dwStyle & WS_OVERLAPPEDWINDOW) {
+    MONITORINFO mi = { sizeof(mi) };
+    if (GetWindowPlacement(gameWindow.hwnd, &gameWindow.prevPlacement) &&
+        GetMonitorInfo(MonitorFromWindow(gameWindow.hwnd,
+                       MONITOR_DEFAULTTOPRIMARY), &mi)) {
+      SetWindowLong(gameWindow.hwnd, GWL_STYLE,
+                    dwStyle & ~WS_OVERLAPPEDWINDOW);
+      SetWindowPos(gameWindow.hwnd, HWND_TOP,
+                   mi.rcMonitor.left, mi.rcMonitor.top,
+                   mi.rcMonitor.right - mi.rcMonitor.left,
+                   mi.rcMonitor.bottom - mi.rcMonitor.top,
+                   SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
     }
-    else
-    {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
+  } else {
+    SetWindowLong(gameWindow.hwnd, GWL_STYLE,
+                  dwStyle | WS_OVERLAPPEDWINDOW);
+    SetWindowPlacement(gameWindow.hwnd, &gameWindow.prevPlacement);
+    SetWindowPos(gameWindow.hwnd, NULL, 0, 0, 0, 0,
+                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+                 SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
   }
 }
 
-void SetWindowSizingCallback(WindowSizing *callback)
+void QuitApp()
 {
-  windowSizingCallback = callback;
+  gameWindow.shouldClose = TRUE;
 }

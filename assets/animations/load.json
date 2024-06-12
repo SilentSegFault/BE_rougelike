@@ -1,0 +1,93 @@
+{"load" : [
+  {
+    "name" : "default",
+    "spritesheet" : "default",
+    "row" : 0,
+    "frames" : 1,
+    "speed" : 0
+  },
+  {
+    "name" : "playerIdle",
+    "spritesheet" : "player",
+    "row" : 0,
+    "frames" : 1,
+    "speed" : 1
+  },
+  {
+    "name" : "playerMove",
+    "spritesheet" : "player",
+    "row" : 0,
+    "frames" : 2,
+    "speed" : 6
+  },
+  {
+    "name" : "char1Idle",
+    "spritesheet" : "char1",
+    "row" : 0,
+    "frames" : 1,
+    "speed" : 1
+  },
+  {
+    "name" : "enemy1",
+    "spritesheet" : "enemy1",
+    "row" : 0,
+    "frames" : 4,
+    "speed" : 8
+  },
+  {
+    "name" : "enemy3Idle",
+    "spritesheet" : "enemy3Idle",
+    "row" : 0,
+    "frames" : 4,
+    "speed" : 8
+  },
+  {
+    "name" : "enemy4Walk",
+    "spritesheet" : "enemy4",
+    "row" : 0,
+    "frames" : 6,
+    "speed" : 6
+  },
+  {
+    "name" : "enemy4Boom",
+    "spritesheet" : "enemy4Boom",
+    "row" : 0,
+    "frames" : 5,
+    "speed" : 8
+  },
+  {
+    "name" : "explosion",
+    "spritesheet" : "explosion",
+    "row" : 0,
+    "frames" : 6,
+    "speed" : 4
+  },
+  {
+    "name" : "boss",
+    "spritesheet" : "boss",
+    "row" : 0,
+    "frames" : 4,
+    "speed" : 8
+  },
+  {
+    "name" : "bossSummon",
+    "spritesheet" : "bossSummon",
+    "row" : 0,
+    "frames" : 4,
+    "speed" : 8
+  },
+  {
+    "name" : "chestClosed",
+    "spritesheet" : "chest",
+    "row" : 0,
+    "frames" : 1,
+    "speed" : 1
+  },
+  {
+    "name" : "chestOpening",
+    "spritesheet" : "chest",
+    "row" : 0,
+    "frames" : 2,
+    "speed" : 6
+  }
+]}
