@@ -12,8 +12,9 @@ end
 function level2f2:OnStart()
 	SpawnEntity("WallHorizontal", 1920 / 2, 100, 0)
 	SpawnEntity("WallHorizontal", 1920 / 2, 1080 - 70, 0)
-	SpawnEntity("WallVertical", 70, 1080 / 2, 0)
+	SpawnEntity("WallVertical", 30, 1080 / 2, 0)
 	SpawnEntity("WallVertical", 1920 - 70, 1080 / 2, 0)
+    SpawnEntity("Level2Floor2Corridor", 60 , 1080 /2 , 0)
 	playerID = SpawnEntity("Player", LastPlayerPos.x, LastPlayerPos.y, 0)
 
 	local ent = Ecs:GetEntity(playerID)
@@ -27,6 +28,13 @@ function level2f2:OnStart()
 	ent.weapon = weaponID
 
 	
+end
+
+function level2f2:OnUpdate(deltaTime)
+	if EntitiesToKill <= 0 then
+		CanAccesLevel2Floor2 = true
+		
+	end
 end
 
 return level2f2

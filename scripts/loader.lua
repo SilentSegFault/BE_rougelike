@@ -65,6 +65,7 @@ Explosion = require("explosion")
 Level1Floor2 = require("floor2/level1")
 Level2Floor2 = require("floor2/level2")
 Level1Florr2Corridor = require("floor2/level1corridor")
+<<<<<<< HEAD
 
 Level11Floor3 = require("floor3/level1_1")
 Level12Floor3 = require("floor3/level1_2")
@@ -81,3 +82,9 @@ Level12Floor3BossDoor = require("floor3/level1_2_boss_door")
 
 Level21Floor3Door = require("floor3/level2_1_door")
 Level22Floor3Door = require("floor3/level2_2_door")
+=======
+Level2Floor2Corridor = require("floor2/level2corridor")
+Level1Florr2Door = require("floor2/level1door")
+Level1Floor2Room1 = require("floor2/room1")
+Level1Floor2Room1Door =require("floor2/room1door")
+>>>>>>> 3fa6f8af87f3923696646e822ad63233d4e54fa4
