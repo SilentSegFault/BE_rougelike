@@ -17,7 +17,7 @@ Make sure that you added your enviroment bin directory to path!
 First you have to download this project or clone it using git. 
 To clone it open cmd in selected directory and use (dot in the end is important).
 ```console
-    git clone https://github.com/NewPopeButDarker/BE_rougelike.git .
+    git clone https://github.com/LowLevelStudent/BE_rougelike.git .
 ```
 
 ### Building project
